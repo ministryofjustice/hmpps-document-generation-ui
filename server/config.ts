@@ -72,8 +72,17 @@ export default {
       agent: new AgentConfig(Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000))),
       enabled: get('TOKEN_VERIFICATION_ENABLED', 'false') === 'true',
     },
+    documentGenerationApi: {
+      url: get('DOCUMENT_GENERATION_API_UR', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('DOCUMENT_GENERATION_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('DOCUMENT_GENERATION_API_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('DOCUMENT_GENERATION_API_TIMEOUT_RESPONSE', 5000))),
+    },
     exampleApi: {
-      url: get('EXAMPLE_API_URL', 'http://localhost:8080', requiredInProduction),
+      url: get('EXAMPLE_API_URL', 'http://localhost:8080', { requireInProduction: false }),
       healthPath: '/health/ping',
       timeout: {
         response: Number(get('EXAMPLE_API_TIMEOUT_RESPONSE', 5000)),
