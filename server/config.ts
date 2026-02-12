@@ -73,7 +73,7 @@ export default {
       enabled: get('TOKEN_VERIFICATION_ENABLED', 'false') === 'true',
     },
     documentGenerationApi: {
-      url: get('DOCUMENT_GENERATION_API_UR', 'http://localhost:8080', requiredInProduction),
+      url: get('DOCUMENT_GENERATION_API_URL', 'http://localhost:8080', requiredInProduction),
       healthPath: '/health/ping',
       timeout: {
         response: Number(get('DOCUMENT_GENERATION_API_TIMEOUT_RESPONSE', 5000)),
