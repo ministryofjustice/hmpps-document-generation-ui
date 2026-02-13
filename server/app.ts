@@ -2,6 +2,7 @@ import express from 'express'
 
 import createError from 'http-errors'
 
+import { getFrontendComponents } from '@ministryofjustice/hmpps-connect-dps-components'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
 import { appInsightsMiddleware } from './utils/azureAppInsights'
@@ -18,6 +19,9 @@ import setUpWebSession from './middleware/setUpWebSession'
 
 import routes from './routes'
 import type { Services } from './services'
+import logger from '../logger'
+import config from './config'
+import { AuthorisedRoles } from './middleware/permissions/authorisedRoles'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -34,13 +38,38 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpStaticResources())
   nunjucksSetup(app)
   app.use(setUpAuthentication())
-  app.use(authorisationMiddleware())
+
+  app.get(
+    '/auth-error',
+    getFrontendComponents({
+      logger,
+      requestOptions: { includeSharedData: true },
+      componentApiConfig: config.apis.componentApi,
+      dpsUrl: config.serviceUrls.digitalPrison,
+    }),
+    (_req, res) => {
+      res.status(401)
+      return res.render('autherror')
+    },
+  )
+
+  app.use(authorisationMiddleware([AuthorisedRoles.DOCUMENT_GENERATION_RW]))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
 
+  app.get(
+    /(.*)/,
+    getFrontendComponents({
+      logger,
+      requestOptions: { includeSharedData: true },
+      componentApiConfig: config.apis.componentApi,
+      dpsUrl: config.serviceUrls.digitalPrison,
+    }),
+  )
+
   app.use(routes(services))
 
-  app.use((req, res, next) => next(createError(404, 'Not found')))
+  app.use((_req, _res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production'))
 
   return app

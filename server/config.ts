@@ -21,9 +21,9 @@ const auditConfig = () => {
     queueUrl: get(
       'AUDIT_SQS_QUEUE_URL',
       'http://localhost:4566/000000000000/mainQueue',
-      auditEnabled && requiredInProduction,
+      auditEnabled ? requiredInProduction : undefined,
     ),
-    serviceName: get('AUDIT_SERVICE_NAME', 'UNASSIGNED', auditEnabled && requiredInProduction),
+    serviceName: get('AUDIT_SERVICE_NAME', 'UNASSIGNED', auditEnabled ? requiredInProduction : undefined),
     region: get('AUDIT_SQS_REGION', 'eu-west-2'),
   }
 }
@@ -46,6 +46,10 @@ export default {
   session: {
     secret: get('SESSION_SECRET', 'app-insecure-default-session', requiredInProduction),
     expiryMinutes: Number(get('WEB_SESSION_TIMEOUT_IN_MINUTES', 120)),
+  },
+  serviceUrls: {
+    digitalPrison: get('DPS_HOME_PAGE_URL', 'http://localhost:3001', requiredInProduction),
+    prisonerProfile: get('PRISONER_PROFILE_URL', 'http://localhost:3001', requiredInProduction),
   },
   apis: {
     hmppsAuth: {
@@ -81,6 +85,14 @@ export default {
       },
       agent: new AgentConfig(Number(get('DOCUMENT_GENERATION_API_TIMEOUT_RESPONSE', 5000))),
     },
+    componentApi: {
+      url: get('COMPONENT_API_URL', 'http://localhost:8082', requiredInProduction),
+      timeout: {
+        response: Number(get('COMPONENT_API_TIMEOUT_RESPONSE', 2500)),
+        deadline: Number(get('COMPONENT_API_TIMEOUT_DEADLINE', 2500)),
+      },
+      agent: new AgentConfig(Number(get('COMPONENT_API_TIMEOUT_RESPONSE', 2500))),
+    },
     exampleApi: {
       url: get('EXAMPLE_API_URL', 'http://localhost:8080', { requireInProduction: false }),
       healthPath: '/health/ping',
@@ -96,4 +108,5 @@ export default {
   },
   ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
+  appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
 }

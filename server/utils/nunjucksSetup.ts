@@ -6,14 +6,19 @@ import fs from 'fs'
 import { initialiseName } from './utils'
 import config from '../config'
 import logger from '../../logger'
+import applicationInfo from '../applicationInfo'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
 
   app.locals.asset_path = '/assets/'
-  app.locals.applicationName = 'HMPPS Document Generation Ui'
+  app.locals.applicationName = 'HMPPS Document Generation'
   app.locals.environmentName = config.environmentName
   app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
+  app.locals.appInsightsConnectionString = config.appInsightsConnectionString
+  app.locals.buildNumber = config.buildNumber
+  app.locals.appInsightsApplicationName = applicationInfo().applicationName
+
   let assetManifest: Record<string, string> = {}
 
   try {
@@ -25,11 +30,20 @@ export default function nunjucksSetup(app: express.Express): void {
     }
   }
 
+  app.use((_req, res, next) => {
+    res.locals.digitalPrisonServicesUrl = config.serviceUrls.digitalPrison
+    res.locals.prisonerProfileUrl = config.serviceUrls.prisonerProfile
+    return next()
+  })
+
   const njkEnv = nunjucks.configure(
     [
       path.join(__dirname, '../../server/views'),
+      path.join(__dirname, '../../server/routes/journeys'),
+      path.join(__dirname, '../../server/routes'),
       'node_modules/govuk-frontend/dist/',
       'node_modules/@ministryofjustice/frontend/',
+      'node_modules/@ministryofjustice/hmpps-connect-dps-components/dist/assets/',
     ],
     {
       autoescape: true,
