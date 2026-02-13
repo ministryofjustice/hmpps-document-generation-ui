@@ -1,4 +1,5 @@
 import { HmppsUser } from '../../interfaces/hmppsUser'
+import { CaseLoad } from '../../interfaces/caseLoad'
 
 export declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
@@ -23,6 +24,45 @@ export declare global {
 
     interface Locals {
       user: HmppsUser
+      digitalPrisonServicesUrl: string
+      prisonerProfileUrl: string
+      cspNonce: string
+      csrfToken: ReturnType<CsrfTokenGenerator>
+      asset_path: string
+      applicationName: string
+      environmentName: string
+      environmentNameColour: string
+      feComponents?: {
+        sharedData?: {
+          activeCaseLoad: CaseLoad
+          caseLoads: CaseLoad[]
+          services: {
+            id: string
+            heading: string
+            description: string
+            href: string
+            navEnabled: boolean
+          }[]
+        }
+      }
+      auditEvent: {
+        who: string
+        correlationId: string
+        subjectId?: string
+        subjectType?: string
+        suppress?: boolean
+        details?: {
+          activeCaseLoadId?: string
+          pageUrl: string
+          pageName?: Page
+          query?: string
+          [key: string]: unknown
+        }
+      }
+      formResponses?: Record<string, unknown>
+      appInsightsConnectionString?: string
+      appInsightsApplicationName?: string
+      buildNumber?: string
     }
   }
 }
