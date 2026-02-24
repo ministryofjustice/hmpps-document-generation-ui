@@ -72,7 +72,7 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: Playwright Tests
-          path: artifacts/npm_integration_test_artifacts/playwright/junit.xml
+          path: artifacts/npm_integration_test_artifacts/test_results/playwright/junit.xml
           reporter: java-junit
     needs:
       - node_integration_tests
