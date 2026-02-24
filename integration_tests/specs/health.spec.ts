@@ -1,10 +1,11 @@
 import { expect, test } from '@playwright/test'
-import exampleApi from '../mockApis/exampleApi'
 import hmppsAuth from '../mockApis/hmppsAuth'
 import tokenVerification from '../mockApis/tokenVerification'
 
 import { resetStubs } from '../testUtils'
 import { stubDocumentGenerationPing } from '../mockApis/documentGenerationApi'
+import { stubPrisonApiHealth } from '../mockApis/prisonApi'
+import { stubPrisonerSearchPing } from '../mockApis/prisonerSearchApi'
 
 test.describe('Health', () => {
   test.beforeEach(async () => {
@@ -15,9 +16,10 @@ test.describe('Health', () => {
     test.beforeEach(async () => {
       await Promise.all([
         hmppsAuth.stubPing(),
-        exampleApi.stubPing(),
         tokenVerification.stubPing(),
         stubDocumentGenerationPing(),
+        stubPrisonApiHealth(),
+        stubPrisonerSearchPing(),
       ])
     })
 
@@ -42,12 +44,7 @@ test.describe('Health', () => {
 
   test.describe('Some unhealthy', () => {
     test.beforeEach(async () => {
-      await Promise.all([
-        hmppsAuth.stubPing(),
-        exampleApi.stubPing(),
-        tokenVerification.stubPing(500),
-        stubDocumentGenerationPing(),
-      ])
+      await Promise.all([hmppsAuth.stubPing(), tokenVerification.stubPing(500), stubDocumentGenerationPing()])
     })
 
     test('Health check status is down', async ({ page }) => {
