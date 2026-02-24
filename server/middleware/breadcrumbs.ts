@@ -9,6 +9,7 @@ export class Breadcrumbs {
     this.breadcrumbs = [
       {
         text: 'Digital Prison Services',
+        alias: 'DPS',
         href: res.locals.digitalPrisonServicesUrl,
       },
     ]

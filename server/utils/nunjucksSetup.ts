@@ -3,7 +3,7 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
-import { initialiseName } from './utils'
+import { initialiseName, setCheckedValue, setSelectedValue } from './utils'
 import config from '../config'
 import logger from '../../logger'
 import applicationInfo from '../applicationInfo'
@@ -64,4 +64,6 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('findErrorMessage', findErrorMessage)
   njkEnv.addFilter('buildErrorSummaryList', buildErrorSummaryList)
   njkEnv.addFilter('customErrorOrderBuilder', customErrorOrderBuilder)
+  njkEnv.addFilter('setSelectedValue', setSelectedValue)
+  njkEnv.addFilter('setCheckedValue', setCheckedValue)
 }

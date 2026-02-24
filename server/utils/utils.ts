@@ -21,3 +21,26 @@ export const initialiseName = (fullName?: string | null): string | null => {
   const array = fullName.split(' ')
   return `${array[0]?.[0]}. ${array.reverse()[0]}`
 }
+
+interface SelectOption {
+  text: string
+  value: string | number
+  selected?: boolean
+  attributes?: Record<string, string>
+}
+
+export const setSelectedValue = (items: SelectOption[] | null, selected: string | number): SelectOption[] | null => {
+  if (!items) return null
+  return items.map(entry => ({ ...entry, selected: entry && entry.value === selected }))
+}
+
+export const setCheckedValue = (
+  items: SelectOption[] | null,
+  selected: (string | number)[] | (string | number),
+): SelectOption[] | null => {
+  if (!items) return null
+  return items.map(entry => ({
+    ...entry,
+    checked: entry && Array.isArray(selected) ? selected.includes(entry.value) : entry.value === selected,
+  }))
+}
