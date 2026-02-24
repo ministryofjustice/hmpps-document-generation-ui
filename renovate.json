@@ -2,6 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["github>ministryofjustice/hmpps-renovate-config:node"],
   "prBodyTemplate": "{{{table}}}{{{notes}}}{{{warnings}}}{{{controls}}}",
+  "ignoreDeps": ["applicationinsights"],
   "packageRules": [
     {
       "matchManagers": ["npm"],
@@ -37,7 +38,10 @@
     },
     {
       "matchManagers": ["github-actions"],
-      "fileMatch": ["^\\.github/workflows/.*\\.yml$"]
+      "matchFileNames": [
+        "**/.github/workflows/**/*.ya?ml",
+        "**/.github/actions/**/*.ya?ml"
+        ]
     },
     {
       "matchManagers": ["pre-commit"],
