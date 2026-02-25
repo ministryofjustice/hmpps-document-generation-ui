@@ -1,0 +1,106 @@
+{% extends "partials/layout.njk" %}
+{%- from "govuk/components/button/macro.njk" import govukButton -%}
+{%- from "govuk/components/input/macro.njk" import govukInput -%}
+{%- from "govuk/components/textarea/macro.njk" import govukTextarea -%}
+{%- from "govuk/components/file-upload/macro.njk" import govukFileUpload -%}
+{%- from "govuk/components/checkboxes/macro.njk" import govukCheckboxes -%}
+{%- from "govuk/components/select/macro.njk" import govukSelect -%}
+
+{% set pageTitle = 'Add template - Document generation' %}
+
+{% block innerContent %}
+  <h1 class="govuk-heading-l">Add template</h1>
+
+  <form method="post" action="add-template?_csrf={{ csrfToken }}" enctype="multipart/form-data">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+    {{ govukSelect({
+      name: "group",
+      label: {
+        text: "Group"
+      },
+      items: groupings | setSelectedValue(group),
+      errorMessage: validationErrors | findError('group')
+    }) }}
+
+    {{ govukInput({
+      name: "code",
+      classes: "govuk-input--width-10",
+      label: { text: "Code" },
+      errorMessage: validationErrors | findError('code'),
+      value: code
+    }) }}
+
+    {{ govukInput({
+      name: "name",
+      classes: "govuk-input--width-20",
+      label: { text: "Name" },
+      errorMessage: validationErrors | findError('name'),
+      value: name
+    }) }}
+
+    {{ govukTextarea({
+      name: "description",
+      label: { text: "Description (optional)" },
+      errorMessage: validationErrors | findError('description'),
+      value: description
+    }) }}
+
+    {{ govukFileUpload({
+      name: "file",
+      label: { text: "Upload a file" },
+      errorMessage: validationErrors | findError('file'),
+      attributes: { accept: '.doc,.dot,.wbk,.docx,.docm,.dotx,.dotm' }
+    }) }}
+
+    {{ govukCheckboxes({
+      name: "prison",
+      fieldset: {
+        legend: {
+          text: "Prison details",
+          isPageHeading: false,
+          classes: "govuk-fieldset__legend--m"
+        }
+      },
+      hint: { text: "Template variables" },
+      items: [
+        {
+          value: "CODE",
+          text: "Prison code"
+        },
+        {
+          value: "NAME",
+          text: "Prison name"
+        },
+        {
+          value: "ADDRESS",
+          text: "Prison address"
+        }
+      ] | setCheckedValue(prison)
+    }) }}
+
+    {{ govukCheckboxes({
+      name: "prisoner",
+      classes: "govuk-!-margin-bottom-5",
+      fieldset: {
+        legend: {
+          text: "Prisoner details",
+          isPageHeading: false,
+          classes: "govuk-fieldset__legend--m"
+        }
+      },
+      hint: { text: "Template variables" },
+      items: [
+        {
+          value: "NAME",
+          text: "Prisoner name"
+        }
+      ] | setCheckedValue(prisoner)
+    }) }}
+
+    {{ govukButton({
+      text: "Confirm and save",
+      preventDoubleClick: true
+    }) }}
+  </form>
+{% endblock %}

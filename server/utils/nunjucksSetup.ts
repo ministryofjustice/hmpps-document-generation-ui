@@ -3,10 +3,16 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
-import { initialiseName } from './utils'
+import { initialiseName, setCheckedValue, setSelectedValue } from './utils'
 import config from '../config'
 import logger from '../../logger'
 import applicationInfo from '../applicationInfo'
+import {
+  buildErrorSummaryList,
+  customErrorOrderBuilder,
+  findError,
+  findErrorMessage,
+} from '../middleware/validation/validationMiddleware'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -39,7 +45,6 @@ export default function nunjucksSetup(app: express.Express): void {
   const njkEnv = nunjucks.configure(
     [
       path.join(__dirname, '../../server/views'),
-      path.join(__dirname, '../../server/routes/journeys'),
       path.join(__dirname, '../../server/routes'),
       'node_modules/govuk-frontend/dist/',
       'node_modules/@ministryofjustice/frontend/',
@@ -54,4 +59,11 @@ export default function nunjucksSetup(app: express.Express): void {
 
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
+
+  njkEnv.addFilter('findError', findError)
+  njkEnv.addFilter('findErrorMessage', findErrorMessage)
+  njkEnv.addFilter('buildErrorSummaryList', buildErrorSummaryList)
+  njkEnv.addFilter('customErrorOrderBuilder', customErrorOrderBuilder)
+  njkEnv.addFilter('setSelectedValue', setSelectedValue)
+  njkEnv.addFilter('setCheckedValue', setCheckedValue)
 }

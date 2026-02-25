@@ -1,8 +1,6 @@
-import express from 'express'
+import express, { NextFunction, Response, Request } from 'express'
 
-import createError from 'http-errors'
-
-import { getFrontendComponents } from '@ministryofjustice/hmpps-connect-dps-components'
+import { getFrontendComponents, retrieveCaseLoadData } from '@ministryofjustice/hmpps-connect-dps-components'
 import * as Sentry from '@sentry/node'
 import './sentry'
 import nunjucksSetup from './utils/nunjucksSetup'
@@ -25,6 +23,9 @@ import logger from '../logger'
 import config from './config'
 import { AuthorisedRoles } from './middleware/permissions/authorisedRoles'
 import sentryMiddleware from './middleware/sentryMiddleware'
+import { auditPageViewMiddleware } from './middleware/audit/auditPageViewMiddleware'
+import { auditApiCallMiddleware } from './middleware/audit/auditApiCallMiddleware'
+import { handleApiError } from './middleware/validation/handleApiError'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -42,6 +43,8 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpStaticResources())
   nunjucksSetup(app)
   app.use(setUpAuthentication())
+  app.get('*any', auditPageViewMiddleware(services.auditService))
+  app.post('*any', auditApiCallMiddleware(services.auditService))
 
   app.get(
     '/auth-error',
@@ -71,15 +74,35 @@ export default function createApp(services: Services): express.Application {
     }),
   )
 
-  app.use(routes(services))
-  app.get('/test-error', (_req, _res) => {
-    throw new Error('sentry test')
+  app.use((_req, res, next) => {
+    res.notFound = () => res.status(404).render('pages/not-found')
+    res.notAuthorised = () => res.status(403).render('pages/not-authorised')
+    next()
   })
+
+  app.use(
+    retrieveCaseLoadData({
+      logger,
+      prisonApiConfig: config.apis.prisonApi,
+    }),
+  )
+
+  app.use(routes(services))
 
   if (config.sentry.dsn) Sentry.setupExpressErrorHandler(app)
 
-  app.use((_req, _res, next) => next(createError(404, 'Not found')))
-  app.use(errorHandler(process.env.NODE_ENV === 'production'))
+  app.use((_req, res) => res.notFound())
+
+  // Error handlers must go after `Sentry.setupExpressErrorHandler(app)` for errors to be captured by Sentry
+  app.use((error: { message?: string }, _req: Request, res: Response, next: NextFunction) => {
+    if (error?.message === 'NOT_AUTHORISED') {
+      res.notAuthorised()
+    } else {
+      next(error)
+    }
+  })
+  app.use(handleApiError)
+  app.use(errorHandler(process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'e2e-test'))
 
   return app
 }

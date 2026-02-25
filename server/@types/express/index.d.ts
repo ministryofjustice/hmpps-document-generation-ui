@@ -1,5 +1,6 @@
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import { CaseLoad } from '../../interfaces/caseLoad'
+import { Breadcrumbs } from '../../middleware/breadcrumbs'
 
 export declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
@@ -20,6 +21,18 @@ export declare global {
       verified?: boolean
       id: string
       logout(done: (err: unknown) => void): void
+    }
+
+    interface Response {
+      notFound(): void
+      notAuthorised(): void
+      getPageViewEvent(isAttempt: boolean): AuditEvent
+      setAuditDetails: {
+        prisonNumber(prisonNumber: string): void
+        searchTerm(searchTerm: string): void
+        suppress(suppress: boolean): void
+      }
+      sendApiEvent?: (apiUrl: string, isAttempt: boolean) => void
     }
 
     interface Locals {
@@ -63,6 +76,7 @@ export declare global {
       appInsightsConnectionString?: string
       appInsightsApplicationName?: string
       buildNumber?: string
+      breadcrumbs: Breadcrumbs
     }
   }
 }
