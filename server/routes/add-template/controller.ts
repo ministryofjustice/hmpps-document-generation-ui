@@ -1,6 +1,7 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import DocumentGenerationService from '../../services/apis/documentGenerationService'
 import { SchemaType } from './schema'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../utils/constants'
 
 export class AddTemplateController {
   constructor(readonly documentGenerationService: DocumentGenerationService) {}
@@ -28,9 +29,17 @@ export class AddTemplateController {
     })
   }
 
-  POST = async (req: Request<unknown, unknown, SchemaType>, res: Response) => {
-    // TODO: Implement API call to create a template and success notification message
+  submitToApi = async (req: Request<unknown, unknown, SchemaType>, res: Response, next: NextFunction) => {
+    try {
+      await this.documentGenerationService.createTemplate({ res }, req.body.code)
+      next()
+    } catch (e) {
+      next(e)
+    }
+  }
 
+  POST = async (req: Request<unknown, unknown, SchemaType>, res: Response) => {
+    req.flash(FLASH_KEY__SUCCESS_BANNER, `A new template has “${req.body.name}” been created`)
     res.redirect(`/?grouping=${req.body.group}`)
   }
 }

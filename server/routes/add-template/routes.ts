@@ -12,7 +12,14 @@ export const AddTemplateRoutes = ({ documentGenerationService }: Services) => {
   const controller = new AddTemplateController(documentGenerationService)
 
   get('/', Page.ADD_TEMPLATE, controller.GET)
-  post('/', overrideTimeoutMiddleware(2 * 60), handleFileUpload(), validate(schema), controller.POST)
+  post(
+    '/',
+    overrideTimeoutMiddleware(2 * 60),
+    handleFileUpload(),
+    validate(schema),
+    controller.submitToApi,
+    controller.POST,
+  )
 
   return router
 }
