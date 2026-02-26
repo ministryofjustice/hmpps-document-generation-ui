@@ -3,6 +3,7 @@ import { Response as SuperAgentResponse } from 'superagent'
 import CustomRestClient, { ApiRequestContext } from '../../data/customRestClient'
 import config from '../../config'
 import logger from '../../../logger'
+import { components } from '../../@types/documentGeneration'
 
 export default class DocumentGenerationService {
   private apiClient: CustomRestClient
@@ -25,11 +26,15 @@ export default class DocumentGenerationService {
     )
   }
 
-  async createTemplate(context: ApiRequestContext, code: string) {
-    throw new Error('DocumentGenerationService.createTemplate not yet implemented')
-
-    return this.apiClient.withContext(context).put<null>({
-      path: `/templates/${code}`,
+  async createTemplate(
+    context: ApiRequestContext,
+    template: components['schemas']['TemplateRequest'],
+    file: { buffer: Buffer; originalname: string },
+  ) {
+    return this.apiClient.withContext(context).put<components['schemas']['TemplateResponse']>({
+      path: '/templates',
+      multipartData: { template },
+      files: { file },
     })
   }
 
@@ -77,5 +82,9 @@ export default class DocumentGenerationService {
         },
       ],
     }
+  }
+
+  async getTemplateVariables(context: ApiRequestContext) {
+    return this.apiClient.withContext(context).get<components['schemas']['TemplateVariables']>({ path: '/variables ' })
   }
 }

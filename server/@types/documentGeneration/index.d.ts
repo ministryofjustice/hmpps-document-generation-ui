@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-  '/templates/{code}': {
+  '/templates': {
     parameters: {
       query?: never
       header?: never
@@ -24,16 +24,58 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/variables': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_DOCUMENT_GENERATION__DOCUMENT_GENERATION_UI
+     */
+    get: operations['getTemplateVariables']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    Group: {
+      code: string
+    }
+    TemplateRequest: {
+      /** Format: uuid */
+      id?: string
+      code: string
+      name: string
+      description?: string
+      variables: components['schemas']['Variable'][]
+      groups: components['schemas']['Group'][]
+    }
     Variable: {
       code: string
       required: boolean
+      description?: string
     }
-    Group: {
+    TemplateResponse: {
+      /** Format: uuid */
+      id: string
+    }
+    Domain: {
       code: string
+      description: string
+      variables: components['schemas']['Variable'][]
+    }
+    TemplateVariables: {
+      domains: components['schemas']['Domain'][]
     }
   }
   responses: never
@@ -48,30 +90,47 @@ export interface operations {
     parameters: {
       query?: never
       header?: never
-      path: {
-        code: string
-      }
+      path?: never
       cookie?: never
     }
     requestBody?: {
       content: {
         'multipart/form-data': {
-          name: string
-          description?: string
+          template: components['schemas']['TemplateRequest']
           /** Format: binary */
           file?: string
-          templateVariables?: components['schemas']['Variable'][]
-          templateGroups?: components['schemas']['Group'][]
         }
       }
     }
     responses: {
-      /** @description No Content */
-      204: {
+      /** @description OK */
+      200: {
         headers: {
           [name: string]: unknown
         }
-        content?: never
+        content: {
+          '*/*': components['schemas']['TemplateResponse']
+        }
+      }
+    }
+  }
+  getTemplateVariables: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TemplateVariables']
+        }
       }
     }
   }
