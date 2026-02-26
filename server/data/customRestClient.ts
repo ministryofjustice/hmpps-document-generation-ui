@@ -68,7 +68,6 @@ export default class CustomRestClient extends RestClient {
       },
       put: async <Response, ErrorData = unknown>(apiRequest: RequestWithBody<Response, ErrorData>) => {
         this.sendAuditEvent(`PUT ${apiRequest.path}`, res, true)
-        console.log(apiRequest)
         const result = (await super.put(
           this.handleApiRequest(apiRequest, res),
           asSystem(res.locals.user.username),
