@@ -1,0 +1,92 @@
+{% extends "partials/layout.njk" %}
+{%- from "govuk/components/button/macro.njk" import govukButton -%}
+{%- from "govuk/components/input/macro.njk" import govukInput -%}
+{%- from "govuk/components/textarea/macro.njk" import govukTextarea -%}
+{%- from "govuk/components/file-upload/macro.njk" import govukFileUpload -%}
+{%- from "govuk/components/checkboxes/macro.njk" import govukCheckboxes -%}
+{%- from "govuk/components/select/macro.njk" import govukSelect -%}
+
+{% set pageTitle = 'Edit template - Document generation' %}
+
+{% block innerContent %}
+  <h1 class="govuk-heading-l">Edit template</h1>
+
+  <form method="post" enctype="multipart/form-data">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+    {{ govukSelect({
+      name: "group",
+      label: {
+        text: "Group"
+      },
+      items: groups | setSelectedValue(group),
+      errorMessage: validationErrors | findError('group')
+    }) }}
+
+    {{ govukInput({
+      name: "code",
+      classes: "govuk-input--width-10",
+      label: { text: "Code" },
+      errorMessage: validationErrors | findError('code'),
+      value: code
+    }) }}
+
+    {{ govukInput({
+      name: "name",
+      classes: "govuk-input--width-20",
+      label: { text: "Name" },
+      errorMessage: validationErrors | findError('name'),
+      value: name
+    }) }}
+
+    {{ govukTextarea({
+      name: "description",
+      label: { text: "Description (optional)" },
+      errorMessage: validationErrors | findError('description'),
+      value: description
+    }) }}
+
+    {{ govukFileUpload({
+      name: "file",
+      label: { text: "Upload a new file (optional)" },
+      hint: { text: "Select a Word template document no larger than 1MB" },
+      errorMessage: validationErrors | findError('file'),
+      attributes: { accept: '.doc,.dot,.wbk,.docx,.docm,.dotx,.dotm' }
+    }) }}
+
+    {% set checkboxes = [] %}
+    {% for domain in variableOptions %}
+      {% set checkboxes = (checkboxes.push(
+        {
+          divider: domain.description
+        }
+      ), checkboxes) %}
+      {% for variable in domain.variables %}
+        {% set checkboxes = (checkboxes.push({
+          html: variable.text + '<span class="govuk-visually-hidden"> (' + domain.description  + ')</span>',
+          value: variable.value
+        }), checkboxes) %}
+      {% endfor %}
+    {% endfor %}
+
+    {{ govukCheckboxes({
+      name: "variables",
+      classes: "divide-by-subheadings",
+      fieldset: {
+        legend: {
+          text: "Template variables",
+          isPageHeading: false,
+          classes: "govuk-fieldset__legend--m"
+        }
+      },
+      hint: { text: "Select at least one variable" },
+      items: checkboxes | setCheckedValue(variables),
+      errorMessage: validationErrors | findError('variables')
+    }) }}
+
+    {{ govukButton({
+      text: "Confirm and save",
+      preventDoubleClick: true
+    }) }}
+  </form>
+{% endblock %}

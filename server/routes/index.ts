@@ -8,6 +8,7 @@ import breadcrumbs from '../middleware/breadcrumbs'
 import { AddTemplateRoutes } from './add-template/routes'
 import populateValidationErrors from '../middleware/validation/populateValidationErrors'
 import { FLASH_KEY__SUCCESS_BANNER } from '../utils/constants'
+import { EditTemplateRoutes } from './edit-template/routes'
 
 export default function routes(services: Services): Router {
   const { router, get } = BaseRouter()
@@ -25,6 +26,7 @@ export default function routes(services: Services): Router {
   get('/', Page.HOMEPAGE, controller.GET)
 
   router.use('/add-template', AddTemplateRoutes(services))
+  router.use('/edit-template/:id', EditTemplateRoutes(services))
 
   return router
 }

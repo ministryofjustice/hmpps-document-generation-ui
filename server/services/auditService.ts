@@ -4,6 +4,7 @@ export enum Page {
   EXAMPLE_PAGE = 'EXAMPLE_PAGE',
   HOMEPAGE = 'HOMEPAGE',
   ADD_TEMPLATE = 'ADD_TEMPLATE',
+  EDIT_TEMPLATE = 'EDIT_TEMPLATE',
 }
 
 export interface PageViewEventDetails {

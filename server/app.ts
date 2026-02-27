@@ -68,7 +68,7 @@ export default function createApp(services: Services): express.Application {
   /*
   For multipart form data, the Multer middleware must run before the csrf middleware in order to handle CSRF tokens properly.
  */
-  app.post(/\/add-template$/, handleFileUpload())
+  app.post(/\/add-template$|\/edit-template\//, handleFileUpload())
 
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())

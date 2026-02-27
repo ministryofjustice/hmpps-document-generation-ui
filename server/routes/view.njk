@@ -45,15 +45,12 @@
         text: template.name
       },
       {
-        text: '-'
+        classes: 'govuk-link govuk-link--no-visited-state',
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="/edit-template/' + template.id + '">Edit<span class="govuk-visually-hidden"> for ' + template.name + '</span></a>'
       },
       {
         classes: 'govuk-link govuk-link--no-visited-state',
-        html: '<a class="govuk-link govuk-link--no-visited-state" href="/edit-template/' + template.code + '">Edit<span class="govuk-visually-hidden"> for ' + template.name + '</span></a>'
-      },
-      {
-        classes: 'govuk-link govuk-link--no-visited-state',
-        html: '<a class="govuk-link govuk-link--no-visited-state" href="/generate-document/' + template.code + '">Generate document<span class="govuk-visually-hidden"> for ' + template.name + '</span></a>',
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="/generate-document/' + template.id + '">Generate document<span class="govuk-visually-hidden"> for ' + template.name + '</span></a>',
         format: "numeric"
       }
     ]), rows) %}
@@ -66,9 +63,6 @@
         head: [
           {
             text: "Name"
-          },
-          {
-            text: "Updated on"
           },
           {
             text: "Actions"
