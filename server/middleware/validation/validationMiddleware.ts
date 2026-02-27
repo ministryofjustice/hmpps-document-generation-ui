@@ -48,8 +48,8 @@ const zObjectStrict = <T = object>(shape: T) =>
  * more info regarding this issue and workaround on: https://github.com/colinhacks/zod/issues/479#issuecomment-2067278879
  */
 const zodAlwaysRefine = <T extends z.ZodTypeAny>(zodType: T) =>
-  z.any().transform((val, ctx) => {
-    const res = zodType.safeParse(val)
+  z.any().transform(async (val, ctx) => {
+    const res = await zodType.safeParseAsync(val)
     if (!res.success) res.error.issues.forEach(issue => ctx.addIssue(issue as $ZodSuperRefineIssue))
     return res.data || val
   }) as unknown as T

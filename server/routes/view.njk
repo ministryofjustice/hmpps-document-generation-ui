@@ -10,12 +10,12 @@
   <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Document generation</h1>
 
   {% set tabs = [] %}
-  {% for grouping in groupings %}
+  {% for group in groups %}
     {% set tabs = (tabs.push(
       {
-        text: grouping.name,
-        href: '?grouping=' + grouping.code,
-        active: activeGroupingCode === grouping.code
+        text: group.name,
+        href: '?group=' + group.code,
+        active: activeGroupCode === group.code
       }
     ), tabs) %}
   {% endfor %}
@@ -31,7 +31,7 @@
       <div class="moj-button-group moj-button-group--inline">
         {{ govukButton({
           text: "Add a template",
-          href: "/add-template?grouping=" + activeGroupingCode,
+          href: "/add-template?group=" + activeGroupCode,
           preventDoubleClick: true
         }) }}
       </div>
@@ -45,7 +45,7 @@
         text: template.name
       },
       {
-        text: '1 January 2001'
+        text: '-'
       },
       {
         classes: 'govuk-link govuk-link--no-visited-state',

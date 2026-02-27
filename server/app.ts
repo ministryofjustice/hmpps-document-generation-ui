@@ -28,6 +28,8 @@ import { auditApiCallMiddleware } from './middleware/audit/auditApiCallMiddlewar
 import { handleApiError } from './middleware/validation/handleApiError'
 import handleFileUpload from './middleware/validation/handleFileUpload'
 
+import './utils/superagentMultipartRequestFix'
+
 export default function createApp(services: Services): express.Application {
   const app = express()
 
