@@ -11,7 +11,7 @@
 {% block innerContent %}
   <h1 class="govuk-heading-l">Add template</h1>
 
-  <form method="post" action="add-template?_csrf={{ csrfToken }}" enctype="multipart/form-data">
+  <form method="post" enctype="multipart/form-data">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
     {{ govukSelect({
@@ -49,53 +49,39 @@
     {{ govukFileUpload({
       name: "file",
       label: { text: "Upload a file" },
+      hint: { text: "Select a Word template document no larger than 1MB" },
       errorMessage: validationErrors | findError('file'),
       attributes: { accept: '.doc,.dot,.wbk,.docx,.docm,.dotx,.dotm' }
     }) }}
 
-    {{ govukCheckboxes({
-      name: "prison",
-      fieldset: {
-        legend: {
-          text: "Prison details",
-          isPageHeading: false,
-          classes: "govuk-fieldset__legend--m"
+    {% set checkboxes = [] %}
+    {% for domain in variableOptions %}
+      {% set checkboxes = (checkboxes.push(
+        {
+          divider: domain.description
         }
-      },
-      hint: { text: "Template variables" },
-      items: [
-        {
-          value: "CODE",
-          text: "Prison code"
-        },
-        {
-          value: "NAME",
-          text: "Prison name"
-        },
-        {
-          value: "ADDRESS",
-          text: "Prison address"
-        }
-      ] | setCheckedValue(prison)
-    }) }}
+      ), checkboxes) %}
+      {% for variable in domain.variables %}
+        {% set checkboxes = (checkboxes.push({
+          html: variable.text + '<span class="govuk-visually-hidden"> (' + domain.description  + ')</span>',
+          value: variable.value
+        }), checkboxes) %}
+      {% endfor %}
+    {% endfor %}
 
     {{ govukCheckboxes({
-      name: "prisoner",
-      classes: "govuk-!-margin-bottom-5",
+      name: "variables",
+      classes: "divide-by-subheadings",
       fieldset: {
         legend: {
-          text: "Prisoner details",
+          text: "Template variables",
           isPageHeading: false,
           classes: "govuk-fieldset__legend--m"
         }
       },
-      hint: { text: "Template variables" },
-      items: [
-        {
-          value: "NAME",
-          text: "Prisoner name"
-        }
-      ] | setCheckedValue(prisoner)
+      hint: { text: "Select at least one variable" },
+      items: checkboxes | setCheckedValue(variables),
+      errorMessage: validationErrors | findError('variables')
     }) }}
 
     {{ govukButton({

@@ -5,36 +5,36 @@ import { createSchema } from '../../middleware/validation/validationMiddleware'
 export const schema = async (req: Request, _res: Response) =>
   createSchema({
     group: z.string().min(1, { message: 'Select a group' }),
-    code: z.string().min(1, { message: 'Enter a code' }),
+    code: z
+      .string()
+      .min(1, { message: 'Enter a code' })
+      .regex(/^\s*[A-Z0-9_]*\s*$/, {
+        message: 'A template code must contain only uppercase letters, numbers and/or underscores',
+      })
+      .transform(val => val.trim()),
     name: z.string().min(1, { message: 'Enter a template name' }),
     description: z.string().transform(val => (val.trim().length ? val : null)),
-    file: z.string().optional(),
-    prison: z
-      .union([z.string(), z.array(z.string())])
+    file: z
+      .object()
       .optional()
+      .transform((_val, ctx) => {
+        if (req.fileError) {
+          ctx.addIssue({ code: 'custom', message: req.fileError })
+          return z.NEVER
+        }
+        if (!req.file) {
+          ctx.addIssue({ code: 'custom', message: 'You must select a file' })
+          return z.NEVER
+        }
+        return req.file
+      }),
+    variables: z
+      .union([z.string(), z.array(z.string())], { message: 'Select at least one template variable' })
       .transform(val => {
         if (!val) return []
         if (Array.isArray(val)) return val
         return [val]
       }),
-    prisoner: z
-      .union([z.string(), z.array(z.string())])
-      .optional()
-      .transform(val => {
-        if (!val) return []
-        if (Array.isArray(val)) return val
-        return [val]
-      }),
-  }).transform(async (val, ctx) => {
-    if (!req.file) {
-      ctx.addIssue({ code: 'custom', message: 'You must select a file', path: ['file'] })
-      return z.NEVER
-    }
-
-    return {
-      ...val,
-      file: req.file,
-    }
   })
 
 export type SchemaType = z.infer<Awaited<ReturnType<typeof schema>>>

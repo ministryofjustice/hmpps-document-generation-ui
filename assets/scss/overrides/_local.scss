@@ -1,3 +1,11 @@
 .govuk-main-wrapper {
   min-height: 600px;
 }
+
+.divide-by-subheadings {
+  .govuk-checkboxes__divider {
+    font-weight: 700;
+    width: unset;
+    text-align: unset;
+  }
+}
