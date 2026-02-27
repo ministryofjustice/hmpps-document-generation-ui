@@ -7,27 +7,27 @@ export class AddTemplateController {
   constructor(readonly documentGenerationService: DocumentGenerationService) {}
 
   GET = async (req: Request, res: Response) => {
-    const [groupings, supportedVariables] = await Promise.all([
-      this.documentGenerationService.getGroupings({ res }).then(result => result.groupings),
+    const [groups, supportedVariables] = await Promise.all([
+      this.documentGenerationService.getGroups({ res }).then(result => result.groups),
       this.documentGenerationService.getTemplateVariables({ res }).then(result => result.domains),
     ])
 
-    const activeGroupingCode = groupings.find(itm => itm.code === req.query['grouping'])?.code ?? groupings[0]!.code
+    const activeGroupCode = groups.find(itm => itm.code === req.query['group'])?.code ?? groups[0]!.code
 
     res.locals.breadcrumbs.addItems({
       text: 'Document generation',
       alias: 'HOMEPAGE',
-      href: `/?grouping=${activeGroupingCode}`,
+      href: `/?group=${activeGroupCode}`,
     })
 
     res.render('add-template/view', {
       showBreadcrumbs: true,
-      groupings: groupings.map(({ code: value, name: text }) => ({ text, value })),
+      groups: groups.map(({ code: value, name: text }) => ({ text, value })),
       variableOptions: supportedVariables.map(domain => ({
         ...domain,
         variables: domain.variables.map(({ code: value, description: text }) => ({ text, value })),
       })),
-      group: res.locals.formResponses?.['group'] ?? activeGroupingCode,
+      group: res.locals.formResponses?.['group'] ?? activeGroupCode,
       code: res.locals.formResponses?.['code'],
       name: res.locals.formResponses?.['name'],
       description: res.locals.formResponses?.['description'],
@@ -56,6 +56,6 @@ export class AddTemplateController {
 
   POST = async (req: Request<unknown, unknown, SchemaType>, res: Response) => {
     req.flash(FLASH_KEY__SUCCESS_BANNER, `A new template has “${req.body.name}” been created`)
-    res.redirect(`/?grouping=${req.body.group}`)
+    res.redirect(`/?group=${req.body.group}`)
   }
 }

@@ -44,38 +44,97 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/groups': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_DOCUMENT_GENERATION__DOCUMENT_GENERATION_UI
+     */
+    get: operations['getTemplateGroups']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/groups/{groupCode}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_DOCUMENT_GENERATION__DOCUMENT_GENERATION_UI
+     *     * ROLE_DOCUMENT_GENERATION__DOCUMENT_GENERATION__RO
+     *     * ROLE_DOCUMENT_GENERATION__DOCUMENT_GENERATION__RW
+     */
+    get: operations['getTemplatesForGroup']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
-    Group: {
-      code: string
-    }
     TemplateRequest: {
       /** Format: uuid */
       id?: string
       code: string
       name: string
       description?: string
-      variables: components['schemas']['Variable'][]
-      groups: components['schemas']['Group'][]
+      variables: components['schemas']['TemplateRequest.Variable'][]
+      groups: components['schemas']['TemplateRequest.Group'][]
     }
-    Variable: {
+    'TemplateRequest.Group': {
+      code: string
+    }
+    'TemplateRequest.Variable': {
       code: string
       required: boolean
-      description?: string
     }
     TemplateResponse: {
       /** Format: uuid */
       id: string
     }
-    Domain: {
+    TemplateVariables: {
+      domains: components['schemas']['TemplateVariables.Domain'][]
+    }
+    'TemplateVariables.Domain': {
       code: string
       description: string
-      variables: components['schemas']['Variable'][]
+      variables: components['schemas']['TemplateVariables.Variable'][]
     }
-    TemplateVariables: {
-      domains: components['schemas']['Domain'][]
+    'TemplateVariables.Variable': {
+      code: string
+      description: string
+      /** @enum {string} */
+      type: 'BINARY' | 'DATE' | 'STRING' | 'TIME'
+    }
+    NamedDescription: {
+      code: string
+      name: string
+      description: string
+    }
+    TemplateGroups: {
+      groups: components['schemas']['NamedDescription'][]
+    }
+    TemplateGroupTemplates: {
+      group: components['schemas']['NamedDescription']
+      templates: components['schemas']['NamedDescription'][]
     }
   }
   responses: never
@@ -130,6 +189,48 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['TemplateVariables']
+        }
+      }
+    }
+  }
+  getTemplateGroups: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TemplateGroups']
+        }
+      }
+    }
+  }
+  getTemplatesForGroup: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        groupCode: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['TemplateGroupTemplates']
         }
       }
     }

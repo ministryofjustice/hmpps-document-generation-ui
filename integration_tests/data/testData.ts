@@ -1,3 +1,5 @@
+import { components } from '../../server/@types/documentGeneration'
+
 const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const randomChar = () => uppercaseChars.charAt(Math.floor(Math.random() * 26))
 
@@ -52,4 +54,69 @@ export const testPrisonerDetails = {
   phoneNumbers: [],
   identifiers: [],
   allConvictedOffences: [],
+}
+
+export const testGroups: components['schemas']['TemplateGroups'] = {
+  groups: [
+    {
+      code: 'EXTERNAL_MOVEMENT',
+      name: 'External movement templates',
+      description:
+        'Document templates associated with external movements in general. These require a person to be selected',
+    },
+    {
+      code: 'TEMPORARY_ABSENCE',
+      name: 'Temporary absence templates',
+      description:
+        'Document templates associated with temporary absences. These require a person and a temporary absence to be selected',
+    },
+  ],
+}
+
+export const testTemplates: components['schemas']['TemplateGroupTemplates'] = {
+  group: {
+    code: 'EXTERNAL_MOVEMENT',
+    name: 'External movement templates',
+    description:
+      'Document templates associated with external movements in general. These require a person to be selected',
+  },
+  templates: [
+    {
+      code: 'ROTL_LIC1',
+      name: 'ROTL 18 licence document',
+      description: 'ROTL licence',
+    },
+    {
+      code: 'LISP_3',
+      name: 'LISP 3',
+      description: 'ROTL licence',
+    },
+  ],
+}
+
+export const testVariables: components['schemas']['TemplateVariables'] = {
+  domains: [
+    {
+      code: 'PERSON',
+      description: 'Prisoner details',
+      variables: [
+        {
+          code: 'PERSON__NAME',
+          description: 'Name',
+          type: 'STRING',
+        },
+      ],
+    },
+    {
+      code: 'TEMPORARY_ABSENCE',
+      description: 'Absence information',
+      variables: [
+        {
+          code: 'TEMPORARY_ABSENCE__START_DATE',
+          description: 'Temporary absence commences on',
+          type: 'STRING',
+        },
+      ],
+    },
+  ],
 }

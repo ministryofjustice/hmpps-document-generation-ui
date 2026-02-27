@@ -5,16 +5,16 @@ export class HomepageController {
   constructor(readonly documentGenerationService: DocumentGenerationService) {}
 
   GET = async (req: Request, res: Response) => {
-    const { groupings } = await this.documentGenerationService.getGroupings({ res })
+    const { groups } = await this.documentGenerationService.getGroups({ res })
 
-    const activeGroupingCode = groupings.find(itm => itm.code === req.query['grouping'])?.code ?? groupings[0]!.code
+    const activeGroupCode = groups.find(itm => itm.code === req.query['group'])?.code ?? groups[0]!.code
 
-    const { templates } = await this.documentGenerationService.getTemplatesForGrouping({ res }, activeGroupingCode)
+    const { templates } = await this.documentGenerationService.getTemplatesForGroup({ res }, activeGroupCode)
 
     res.render('view', {
       showBreadcrumbs: true,
-      groupings,
-      activeGroupingCode,
+      groups,
+      activeGroupCode,
       templates,
     })
   }

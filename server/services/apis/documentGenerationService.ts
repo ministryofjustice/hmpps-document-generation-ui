@@ -38,50 +38,14 @@ export default class DocumentGenerationService {
     })
   }
 
-  async getGroupings(_context: ApiRequestContext) {
-    // TODO: implement actual API call
-
-    return {
-      groupings: [
-        {
-          code: 'EXTERNAL_MOVEMENT',
-          name: 'External movement templates',
-          description:
-            'Document templates associated with external movements in general. These require a person to be selected',
-        },
-        {
-          code: 'TEMPORARY_ABSENCE',
-          name: 'Temporary absence templates',
-          description:
-            'Document templates associated with temporary absences. These require a person and a temporary absence to be selected',
-        },
-      ],
-    }
+  async getGroups(context: ApiRequestContext) {
+    return this.apiClient.withContext(context).get<components['schemas']['TemplateGroups']>({ path: '/groups ' })
   }
 
-  async getTemplatesForGrouping(_context: ApiRequestContext, _grouping: string) {
-    // TODO: implement actual API call
-
-    return {
-      grouping: {
-        code: 'EXTERNAL_MOVEMENT',
-        name: 'External movement templates',
-        description:
-          'Document templates associated with external movements in general. These require a person to be selected',
-      },
-      templates: [
-        {
-          code: 'ROTL_LIC1',
-          name: 'ROTL 18 licence document',
-          description: 'ROTL licence',
-        },
-        {
-          code: 'LISP_3',
-          name: 'LISP 3',
-          description: 'ROTL licence',
-        },
-      ],
-    }
+  async getTemplatesForGroup(context: ApiRequestContext, group: string) {
+    return this.apiClient
+      .withContext(context)
+      .get<components['schemas']['TemplateGroupTemplates']>({ path: `/groups/${group} ` })
   }
 
   async getTemplateVariables(context: ApiRequestContext) {
