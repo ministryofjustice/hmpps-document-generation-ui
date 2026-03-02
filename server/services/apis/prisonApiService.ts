@@ -1,0 +1,34 @@
+import { Response as SuperAgentResponse } from 'superagent'
+import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import CustomRestClient, { ApiRequestContext } from '../../data/customRestClient'
+import config from '../../config'
+import logger from '../../../logger'
+import { AgencyDetails } from './model/agency'
+
+export default class PrisonApiService {
+  private apiClient: CustomRestClient
+
+  constructor(authenticationClient: AuthenticationClient) {
+    this.apiClient = new CustomRestClient(
+      'Prison API',
+      config.apis.prisonApi,
+      logger,
+      authenticationClient,
+      false,
+      (retry?: boolean) => (err: Error, res: SuperAgentResponse) => {
+        if (!retry) return false
+        if (err) return true
+        if (res?.statusCode) {
+          return res.statusCode >= 500
+        }
+        return undefined
+      },
+    )
+  }
+
+  async getPrisonDetails(context: ApiRequestContext, prisonId: string): Promise<AgencyDetails> {
+    return this.apiClient
+      .withContext(context)
+      .get<AgencyDetails>({ path: `/api/agencies/${prisonId}?withAddresses=true` })
+  }
+}

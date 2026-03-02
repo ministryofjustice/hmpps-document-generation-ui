@@ -5,6 +5,7 @@ export enum Page {
   HOMEPAGE = 'HOMEPAGE',
   ADD_TEMPLATE = 'ADD_TEMPLATE',
   EDIT_TEMPLATE = 'EDIT_TEMPLATE',
+  GENERATE_DOCUMENT = 'GENERATE_DOCUMENT',
 }
 
 export interface PageViewEventDetails {

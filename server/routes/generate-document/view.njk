@@ -1,0 +1,85 @@
+{% extends "partials/layout.njk" %}
+{%- from "govuk/components/button/macro.njk" import govukButton -%}
+{%- from "govuk/components/input/macro.njk" import govukInput -%}
+{%- from "govuk/components/textarea/macro.njk" import govukTextarea -%}
+{%- from "govuk/components/file-upload/macro.njk" import govukFileUpload -%}
+{%- from "govuk/components/checkboxes/macro.njk" import govukCheckboxes -%}
+{%- from "govuk/components/select/macro.njk" import govukSelect -%}
+{%- from "govuk/components/summary-list/macro.njk" import govukSummaryList -%}
+
+{% set pageTitle = 'Generate document - Document generation' %}
+
+{% block innerContent %}
+  <h1 class="govuk-heading-l">Generate document</h1>
+
+  {{ govukSummaryList({
+    card: {
+      title: { text: "Template information" }
+    },
+    rows: [
+      {
+        key: { text: "Group" },
+        value: { text: template.groups[0].name }
+      } if template.groups.length,
+      {
+        key: { text: 'Code' },
+        value: { text: template.code }
+      },
+      {
+        key: { text: 'Name' },
+        value: { text: template.name }
+      }
+    ] | removeNullish
+  }) }}
+
+  <h2 class="govuk-heading-m">Variables</h2>
+
+  <form method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+    {% if prisonDomain %}
+      {{ govukInput({
+        name: "prison",
+        classes: "govuk-input--width-4",
+        label: { text: "Prison ID" },
+        errorMessage: validationErrors | findError('prison'),
+        value: formResponses.prison
+      }) }}
+    {% endif %}
+
+    {% if prisonerDomain %}
+      {{ govukInput({
+        name: "prisoner",
+        classes: "govuk-input--width-10",
+        label: { text: "Prison Number" },
+        errorMessage: validationErrors | findError('prisoner'),
+        value: formResponses.prisoner
+      }) }}
+    {% endif %}
+
+    {% for domain in otherDomains %}
+      {% for variable in domain.variables %}
+        {{ govukInput({
+          name: variable.code,
+          label: { text: domain.description + " - " + variable.description },
+          errorMessage: validationErrors | findError(variable.code),
+          value: formResponses[variable.code]
+        }) }}
+      {% endfor %}
+    {% endfor %}
+
+    <div class="govuk-button-group">
+      {{ govukButton({
+        text: "Generate and download",
+        preventDoubleClick: true
+      }) }}
+
+      {{ govukButton({
+        classes: "govuk-button--secondary",
+        text: "Back to document generation",
+        href: homeUrl,
+        preventDoubleClick: true
+      }) }}
+    </div>
+  </form>
+{% endblock %}
