@@ -18,7 +18,7 @@ test.describe('homepage', () => {
     const testPage = await new DocumentGenerationHomepage(page).verifyContent()
     await expect(testPage.button('Add a template')).toBeVisible()
 
-    await testPage.verifyTableRow(1, ['ROTL 18 licence document', '-', /Edit/, /Generate document/])
-    await testPage.verifyTableRow(2, ['LISP 3', '-', /Edit/, /Generate document/])
+    await testPage.verifyTableRow(1, ['ROTL 18 licence document', /Edit/, /Generate document/])
+    await testPage.verifyTableRow(2, ['LISP 3', /Edit/, /Generate document/])
   })
 })

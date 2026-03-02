@@ -3,43 +3,45 @@ import DocumentGenerationService from '../../services/apis/documentGenerationSer
 import { SchemaType } from './schema'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../utils/constants'
 
-export class AddTemplateController {
+export class EditTemplateController {
   constructor(readonly documentGenerationService: DocumentGenerationService) {}
 
-  GET = async (req: Request, res: Response) => {
-    const [groups, supportedVariables] = await Promise.all([
+  GET = async (req: Request<{ id: string }>, res: Response) => {
+    const [template, groups, supportedVariables] = await Promise.all([
+      this.documentGenerationService.getTemplateById({ res }, req.params.id),
       this.documentGenerationService.getGroups({ res }).then(result => result.groups),
       this.documentGenerationService.getTemplateVariables({ res }).then(result => result.domains),
     ])
 
-    const activeGroupCode = groups.find(itm => itm.code === req.query['group'])?.code ?? groups[0]!.code
-
     res.locals.breadcrumbs.addItems({
       text: 'Document generation',
       alias: 'HOMEPAGE',
-      href: `/?group=${activeGroupCode}`,
+      href: `/?group=${template.groups[0]?.code ?? groups[0]!.code}`,
     })
 
-    res.render('add-template/view', {
+    res.render('edit-template/view', {
       showBreadcrumbs: true,
       groups: groups.map(({ code: value, name: text }) => ({ text, value })),
       variableOptions: supportedVariables.map(domain => ({
         ...domain,
         variables: domain.variables.map(({ code: value, description: text }) => ({ text, value })),
       })),
-      group: res.locals.formResponses?.['group'] ?? activeGroupCode,
-      code: res.locals.formResponses?.['code'],
-      name: res.locals.formResponses?.['name'],
-      description: res.locals.formResponses?.['description'],
-      variables: res.locals.formResponses?.['variables'],
+      group: res.locals.formResponses?.['group'] ?? template.groups[0]?.code ?? groups[0]!.code,
+      code: res.locals.formResponses?.['code'] ?? template.code,
+      name: res.locals.formResponses?.['name'] ?? template.name,
+      description: res.locals.formResponses?.['description'] ?? template.description,
+      variables:
+        res.locals.formResponses?.['variables'] ||
+        template.variables.domains.flatMap(domain => domain.variables.map(variable => variable.code)),
     })
   }
 
-  submitToApi = async (req: Request<unknown, unknown, SchemaType>, res: Response, next: NextFunction) => {
+  submitToApi = async (req: Request<{ id: string }, unknown, SchemaType>, res: Response, next: NextFunction) => {
     try {
-      await this.documentGenerationService.createTemplate(
+      await this.documentGenerationService.editTemplate(
         { res },
         {
+          id: req.params.id,
           code: req.body.code,
           name: req.body.name,
           ...(req.body.description ? { description: req.body.description } : { description: '' }),
@@ -55,7 +57,7 @@ export class AddTemplateController {
   }
 
   POST = async (req: Request<unknown, unknown, SchemaType>, res: Response) => {
-    req.flash(FLASH_KEY__SUCCESS_BANNER, `A new template “${req.body.name}” has been created`)
+    req.flash(FLASH_KEY__SUCCESS_BANNER, `Template “${req.body.name}” has been updated`)
     res.redirect(`/?group=${req.body.group}`)
   }
 }

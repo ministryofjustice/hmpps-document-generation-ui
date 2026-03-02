@@ -82,11 +82,13 @@ export const testTemplates: components['schemas']['TemplateGroupTemplates'] = {
   },
   templates: [
     {
+      id: 'template-1',
       code: 'ROTL_LIC1',
       name: 'ROTL 18 licence document',
       description: 'ROTL licence',
     },
     {
+      id: 'template-2',
       code: 'LISP_3',
       name: 'LISP 3',
       description: 'ROTL licence',

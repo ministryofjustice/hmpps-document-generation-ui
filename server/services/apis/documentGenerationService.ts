@@ -38,6 +38,24 @@ export default class DocumentGenerationService {
     })
   }
 
+  async editTemplate(
+    context: ApiRequestContext,
+    template: components['schemas']['TemplateRequest'],
+    file: { buffer: Buffer; originalname: string } | null,
+  ) {
+    return this.apiClient.withContext(context).put<components['schemas']['TemplateResponse']>({
+      path: '/templates',
+      multipartData: { template },
+      ...(file ? { files: { file } } : {}),
+    })
+  }
+
+  async getTemplateById(context: ApiRequestContext, id: string) {
+    return this.apiClient
+      .withContext(context)
+      .get<components['schemas']['TemplateDetail']>({ path: `/templates/${id}` })
+  }
+
   async getGroups(context: ApiRequestContext) {
     return this.apiClient.withContext(context).get<components['schemas']['TemplateGroups']>({ path: '/groups ' })
   }
