@@ -4,7 +4,7 @@ import { createSchema } from '../../middleware/validation/validationMiddleware'
 import { Services } from '../../services'
 
 export const schemaFactory =
-  ({ documentGenerationService, prisonerSearchService, prisonApiService }: Services) =>
+  ({ documentGenerationService, prisonerSearchService, prisonRegisterService }: Services) =>
   async (req: Request, res: Response) => {
     const props: { [key: string]: z.ZodTypeAny } = {}
 
@@ -17,7 +17,7 @@ export const schemaFactory =
         .transform(val => val.trim())
         .transform(async (val, ctx) => {
           try {
-            return await prisonApiService.getPrisonDetails({ res }, val)
+            return await prisonRegisterService.getPrisonDetails({ res }, val)
           } catch {
             ctx.addIssue({
               code: 'custom',

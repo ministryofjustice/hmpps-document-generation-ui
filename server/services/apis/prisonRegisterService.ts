@@ -5,13 +5,13 @@ import config from '../../config'
 import logger from '../../../logger'
 import { AgencyDetails } from './model/agency'
 
-export default class PrisonApiService {
+export default class PrisonRegisterService {
   private apiClient: CustomRestClient
 
   constructor(authenticationClient: AuthenticationClient) {
     this.apiClient = new CustomRestClient(
-      'Prison API',
-      config.apis.prisonApi,
+      'Prison Register API',
+      config.apis.prisonRegisterApi,
       logger,
       authenticationClient,
       false,
@@ -27,8 +27,6 @@ export default class PrisonApiService {
   }
 
   async getPrisonDetails(context: ApiRequestContext, prisonId: string): Promise<AgencyDetails> {
-    return this.apiClient
-      .withContext(context)
-      .get<AgencyDetails>({ path: `/api/agencies/${prisonId}?withAddresses=true` })
+    return this.apiClient.withContext(context).get<AgencyDetails>({ path: `/prisons/id/${prisonId}` })
   }
 }

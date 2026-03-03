@@ -5,7 +5,7 @@ import PrisonerSearchApiService from './apis/prisonerSearchService'
 import config from '../config'
 import logger from '../../logger'
 import DocumentGenerationService from './apis/documentGenerationService'
-import PrisonApiService from './apis/prisonApiService'
+import PrisonRegisterService from './apis/prisonRegisterService'
 
 export const services = () => {
   const { applicationInfo, hmppsAuditClient, hmppsAuthClient, telemetryClient } = dataAccess()
@@ -21,7 +21,7 @@ export const services = () => {
     applicationInfo,
     auditService: new AuditService(hmppsAuditClient),
     prisonerSearchService: new PrisonerSearchApiService(hmppsAuthClient, prisonPermissionsService),
-    prisonApiService: new PrisonApiService(hmppsAuthClient),
+    prisonRegisterService: new PrisonRegisterService(hmppsAuthClient),
     documentGenerationService: new DocumentGenerationService(hmppsAuthClient),
   }
 }
