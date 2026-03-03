@@ -1,10 +1,11 @@
 import { Request, Response } from 'express'
 import DocumentGenerationService from '../../services/apis/documentGenerationService'
+import { GenerateDocumentQuery } from '../download-document/utils'
 
 export class GenerateDocumentController {
   constructor(readonly documentGenerationService: DocumentGenerationService) {}
 
-  GET = async (req: Request<{ id: string }>, res: Response) => {
+  GET = async (req: Request<{ id: string }, unknown, unknown, GenerateDocumentQuery>, res: Response) => {
     const [template, groups] = await Promise.all([
       this.documentGenerationService.getTemplateById({ res }, req.params.id),
       this.documentGenerationService.getGroups({ res }).then(result => result.groups),
@@ -24,11 +25,17 @@ export class GenerateDocumentController {
       homeUrl,
       prisonDomain: template.variables.domains.find(({ code }) => code === 'PRISON'),
       prisonerDomain: template.variables.domains.find(({ code }) => code === 'PERSON'),
-      otherDomains: template.variables.domains.filter(({ code }) => code !== 'PRISON' && code !== 'PERSON'),
+      prison: res.locals.formResponses?.['prison'] ?? req.query.prisonId,
+      prisoner: res.locals.formResponses?.['prisoner'] ?? req.query.prisonNumber,
     })
   }
 
-  POST = async (req: Request, res: Response) => {
-    res.redirect(req.originalUrl)
+  POST = async (req: Request<{ id: string }>, res: Response) => {
+    const query = new URLSearchParams({
+      ...(req.body.prison ? { prisonId: req.body.prison.prisonId } : {}),
+      ...(req.body.prisoner ? { prisonNumber: req.body.prisoner.prisonerNumber } : {}),
+    })
+
+    res.redirect(`/download-document/${req.params.id}?${query.toString()}`)
   }
 }

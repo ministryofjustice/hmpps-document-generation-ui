@@ -1,0 +1,71 @@
+{% extends "partials/layout.njk" %}
+{%- from "govuk/components/button/macro.njk" import govukButton -%}
+{%- from "govuk/components/input/macro.njk" import govukInput -%}
+{%- from "govuk/components/textarea/macro.njk" import govukTextarea -%}
+{%- from "govuk/components/summary-list/macro.njk" import govukSummaryList -%}
+
+{% set pageTitle = 'Generate document - Document generation' %}
+
+{% block innerContent %}
+  <h1 class="govuk-heading-l">Generate document</h1>
+
+  {{ govukSummaryList({
+    card: {
+      title: { text: "Template information" }
+    },
+    rows: [
+      {
+        key: { text: "Group" },
+        value: { text: template.groups[0].name }
+      } if template.groups.length,
+      {
+        key: { text: 'Code' },
+        value: { text: template.code }
+      },
+      {
+        key: { text: 'Name' },
+        value: { text: template.name }
+      }
+    ] | removeNullish
+  }) }}
+
+  <h2 class="govuk-heading-m">Variables</h2>
+
+  <form method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+    {% for domain in domains %}
+      {% for variable in domain.variables %}
+        {% if r/_ADDRESS$/.test(variable.code) %}
+          {{ govukTextarea({
+            name: variable.code,
+            label: { text: domain.description + " - " + variable.description },
+            errorMessage: validationErrors | findError(variable.code),
+            value: variables[variable.code]
+          }) }}
+        {% else %}
+          {{ govukInput({
+            name: variable.code,
+            label: { text: domain.description + " - " + variable.description },
+            errorMessage: validationErrors | findError(variable.code),
+            value: variables[variable.code]
+          }) }}
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+
+    <div class="govuk-button-group">
+      {{ govukButton({
+        text: "Generate and download",
+        preventDoubleClick: true
+      }) }}
+
+      {{ govukButton({
+        classes: "govuk-button--secondary",
+        text: "Back to document generation",
+        href: homeUrl,
+        preventDoubleClick: true
+      }) }}
+    </div>
+  </form>
+{% endblock %}

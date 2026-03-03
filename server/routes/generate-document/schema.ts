@@ -58,11 +58,5 @@ export const schemaFactory =
         })
     }
 
-    for (const domain of template.variables.domains.filter(({ code }) => code !== 'PRISON' && code !== 'PERSON')) {
-      for (const variable of domain.variables) {
-        props[variable.code] = z.string().min(1, { message: `Enter ${domain.description} - ${variable.description}` })
-      }
-    }
-
     return createSchema(props)
   }

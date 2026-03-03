@@ -3,7 +3,7 @@ import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients
 import CustomRestClient, { ApiRequestContext } from '../../data/customRestClient'
 import config from '../../config'
 import logger from '../../../logger'
-import { AgencyDetails } from './model/agency'
+import { Agency } from './model/agency'
 
 export default class PrisonRegisterService {
   private apiClient: CustomRestClient
@@ -26,7 +26,7 @@ export default class PrisonRegisterService {
     )
   }
 
-  async getPrisonDetails(context: ApiRequestContext, prisonId: string): Promise<AgencyDetails> {
-    return this.apiClient.withContext(context).get<AgencyDetails>({ path: `/prisons/id/${prisonId}` })
+  async getPrisonDetails(context: ApiRequestContext, prisonId: string): Promise<Agency> {
+    return this.apiClient.withContext(context).get<Agency>({ path: `/prisons/id/${prisonId}` })
   }
 }

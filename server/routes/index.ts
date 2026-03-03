@@ -10,6 +10,7 @@ import populateValidationErrors from '../middleware/validation/populateValidatio
 import { FLASH_KEY__SUCCESS_BANNER } from '../utils/constants'
 import { EditTemplateRoutes } from './edit-template/routes'
 import { GenerateDocumentRoutes } from './generate-document/routes'
+import { DownloadDocumentRoutes } from './download-document/routes'
 
 export default function routes(services: Services): Router {
   const { router, get } = BaseRouter()
@@ -29,6 +30,7 @@ export default function routes(services: Services): Router {
   router.use('/add-template', AddTemplateRoutes(services))
   router.use('/edit-template/:id', EditTemplateRoutes(services))
   router.use('/generate-document/:id', GenerateDocumentRoutes(services))
+  router.use('/download-document/:id', DownloadDocumentRoutes(services))
 
   return router
 }

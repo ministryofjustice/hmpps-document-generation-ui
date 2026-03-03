@@ -6,6 +6,7 @@ export enum Page {
   ADD_TEMPLATE = 'ADD_TEMPLATE',
   EDIT_TEMPLATE = 'EDIT_TEMPLATE',
   GENERATE_DOCUMENT = 'GENERATE_DOCUMENT',
+  DOWNLOAD_DOCUMENT = 'DOWNLOAD_DOCUMENT',
 }
 
 export interface PageViewEventDetails {
