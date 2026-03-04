@@ -34,12 +34,13 @@
   <form method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
-    {% for domain in domains %}
+    {% for domain in template.variables.domains %}
+      <h3 class="govuk-heading-s">{{ domain.description }}</h3>
       {% for variable in domain.variables %}
         {% if r/_ADDRESS$/.test(variable.code) %}
           {{ govukTextarea({
             name: variable.code,
-            label: { text: domain.description + " - " + variable.description },
+            label: { html: variable.description + '<span class="govuk-visually-hidden"> (' + domain.description  + ')</span>'  },
             errorMessage: validationErrors | findError(variable.code),
             value: variables[variable.code]
           }) }}

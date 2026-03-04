@@ -1,6 +1,7 @@
 import { Services } from '../../services'
 import { ApiRequestContext } from '../../data/customRestClient'
 import { formatAddress } from '../../utils/format'
+import { convertToTitleCase } from '../../utils/utils'
 
 export type GenerateDocumentQuery = { prisonId?: string; prisonNumber?: string }
 
@@ -21,9 +22,11 @@ export const mapTemplateVariables = async (
   if (query.prisonNumber) {
     const prisoner = await prisonerSearchService.getPrisonerDetails(context, query.prisonNumber)
     if (prisoner) {
-      variables['PERSON__NAME'] = prisoner.middleNames
-        ? `${prisoner.firstName} ${prisoner.middleNames} ${prisoner.lastName}`
-        : `${prisoner.firstName} ${prisoner.lastName}`
+      variables['PERSON__NAME'] = convertToTitleCase(
+        prisoner.middleNames
+          ? `${prisoner.firstName} ${prisoner.middleNames} ${prisoner.lastName}`
+          : `${prisoner.firstName} ${prisoner.lastName}`,
+      )
       variables['PERSON__IMAGE'] = prisoner.prisonerNumber
       variables['PERSON__PRISON_NUMBER'] = prisoner.prisonerNumber
       variables['PERSON__COURT_REFERENCE_NUMBER'] = prisoner.croNumber ?? ''

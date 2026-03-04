@@ -12,12 +12,6 @@ export class DownloadDocumentController {
     res.render('download-document/view', {
       backUrl: `/generate-document/${req.params.id}?${new URLSearchParams(req.query).toString()}`,
       template,
-      domains: template.variables.domains
-        .sort((a, b) => a.description.localeCompare(b.description))
-        .map(domain => ({
-          ...domain,
-          variables: domain.variables.sort((a, b) => a.description.localeCompare(b.description)),
-        })),
       variables: res.locals.formResponses ?? (await mapTemplateVariables(this.services, { res }, req.query)),
     })
   }
