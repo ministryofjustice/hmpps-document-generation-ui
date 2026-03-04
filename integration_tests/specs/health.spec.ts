@@ -6,6 +6,7 @@ import { resetStubs } from '../testUtils'
 import { stubDocumentGenerationPing } from '../mockApis/documentGenerationApi'
 import { stubPrisonApiHealth } from '../mockApis/prisonApi'
 import { stubPrisonerSearchPing } from '../mockApis/prisonerSearchApi'
+import { stubPrisonRegisterApiHealth } from '../mockApis/prisonRegisterApi'
 
 test.describe('Health', () => {
   test.beforeEach(async () => {
@@ -20,6 +21,7 @@ test.describe('Health', () => {
         stubDocumentGenerationPing(),
         stubPrisonApiHealth(),
         stubPrisonerSearchPing(),
+        stubPrisonRegisterApiHealth(),
       ])
     })
 

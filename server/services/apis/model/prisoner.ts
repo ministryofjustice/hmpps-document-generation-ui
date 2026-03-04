@@ -2,6 +2,7 @@ export default interface Prisoner {
   prisonerNumber: string
   firstName: string
   lastName: string
+  middleNames: string
   cellLocation: string
   prisonId: string
   dateOfBirth: string
@@ -14,4 +15,9 @@ export default interface Prisoner {
   previousPrisonLeavingDate?: string
   lastPrisonId?: string
   releaseDate?: string
+
+  croNumber?: string
+  pncNumber?: string
+  bookNumber?: string
+  category?: string
 }

@@ -10,7 +10,7 @@ export default class DocumentGenerationService {
 
   constructor(authenticationClient: AuthenticationClient) {
     this.apiClient = new CustomRestClient(
-      'External Movements API',
+      'Document Generation API',
       config.apis.documentGenerationApi,
       logger,
       authenticationClient,

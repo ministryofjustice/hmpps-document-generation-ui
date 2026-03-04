@@ -31,7 +31,7 @@ export default class PrisonerSearchApiService {
     )
   }
 
-  async getPrisonerDetails(context: ApiRequestContext, prisonerNumber: string): Promise<Prisoner> {
+  async getPrisonerDetails(context: ApiRequestContext, prisonerNumber: string): Promise<Prisoner | null> {
     const prisoner = await this.prisonerSearchApiClient
       .withContext(context)
       .get<Prisoner>({ path: `/prisoner/${prisonerNumber}` })
@@ -44,12 +44,7 @@ export default class PrisonerSearchApiService {
 
     if (permission['prisoner:base-record:read']) return prisoner
 
-    return {
-      ...prisoner,
-      prisonName: '',
-      cellLocation: '',
-      dateOfBirth: '',
-    }
+    return null
   }
 
   searchPrisoner(context: ApiRequestContext, searchTerm: string): Promise<{ content: Prisoner[] }> {

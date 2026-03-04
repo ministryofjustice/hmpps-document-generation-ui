@@ -66,4 +66,5 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('customErrorOrderBuilder', customErrorOrderBuilder)
   njkEnv.addFilter('setSelectedValue', setSelectedValue)
   njkEnv.addFilter('setCheckedValue', setCheckedValue)
+  njkEnv.addFilter('removeNullish', arr => arr.filter(Boolean))
 }
