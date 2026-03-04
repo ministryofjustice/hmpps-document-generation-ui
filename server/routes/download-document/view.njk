@@ -47,7 +47,7 @@
         {% else %}
           {{ govukInput({
             name: variable.code,
-            label: { text: domain.description + " - " + variable.description },
+            label: { html: variable.description + '<span class="govuk-visually-hidden"> (' + domain.description  + ')</span>' },
             errorMessage: validationErrors | findError(variable.code),
             value: variables[variable.code]
           }) }}
