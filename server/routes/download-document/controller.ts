@@ -3,22 +3,31 @@ import { format } from 'date-fns'
 import { Services } from '../../services'
 import { FLASH_KEY__FORM_RESPONSES } from '../../utils/constants'
 import { GenerateDocumentQuery, mapTemplateVariables } from './utils'
+import { permittedRedirect } from '../../utils/permittedRedirect'
 
 export class DownloadDocumentController {
   constructor(readonly services: Services) {}
 
-  GET = async (req: Request<{ id: string }, unknown, unknown, GenerateDocumentQuery>, res: Response) => {
+  GET = async (
+    req: Request<{ id: string }, unknown, unknown, GenerateDocumentQuery & { returnTo?: string }>,
+    res: Response,
+  ) => {
     const [template, groups] = await Promise.all([
       this.services.documentGenerationService.getTemplateById({ res }, req.params.id),
       this.services.documentGenerationService.getGroups({ res }).then(result => result.groups),
     ])
 
+    console.log(req.query.returnTo)
+
+    const returnTo = permittedRedirect(req.query.returnTo)
+
     const homeUrl = `/?group=${template.groups[0]?.code ?? groups[0]!.code}`
     const variables = res.locals.formResponses ?? (await mapTemplateVariables(this.services, { res }, req.query))
 
     res.render('download-document/view', {
-      backUrl: `/generate-document/${req.params.id}?${new URLSearchParams(req.query).toString()}`,
+      backUrl: returnTo ?? `/generate-document/${req.params.id}?${new URLSearchParams(req.query).toString()}`,
       homeUrl,
+      returnTo,
       template,
       variables,
     })

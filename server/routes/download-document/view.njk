@@ -4,10 +4,10 @@
 {%- from "govuk/components/textarea/macro.njk" import govukTextarea -%}
 {%- from "govuk/components/summary-list/macro.njk" import govukSummaryList -%}
 
-{% set pageTitle = 'Generate document - Document generation' %}
+{% set pageTitle = 'Download document - Document generation' %}
 
 {% block innerContent %}
-  <h1 class="govuk-heading-l">Generate document</h1>
+  <h1 class="govuk-heading-l">Download document</h1>
 
   {{ govukSummaryList({
     card: {
@@ -81,12 +81,21 @@
         preventDoubleClick: true
       }) }}
 
-      {{ govukButton({
-        classes: "govuk-button--secondary",
-        text: "Back to document generation",
-        href: homeUrl,
-        preventDoubleClick: true
-      }) }}
+      {% if returnTo %}
+        {{ govukButton({
+          classes: "govuk-button--secondary",
+          text: "Exit",
+          href: returnTo,
+          preventDoubleClick: true
+        }) }}
+      {% else %}
+        {{ govukButton({
+          classes: "govuk-button--secondary",
+          text: "Back to document generation",
+          href: homeUrl,
+          preventDoubleClick: true
+        }) }}
+      {% endif %}
     </div>
   </form>
 {% endblock %}
