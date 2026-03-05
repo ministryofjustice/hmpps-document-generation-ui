@@ -37,7 +37,26 @@
     {% for domain in template.variables.domains %}
       <h3 class="govuk-heading-s">{{ domain.description }}</h3>
       {% for variable in domain.variables %}
-        {% if r/_ADDRESS$/.test(variable.code) %}
+        {% if variable.code === 'PERSON__IMAGE' %}
+          <div class="horizontal-form govuk-!-margin-bottom-5">
+              {{ govukInput({
+                name: variable.code,
+                classes: "govuk-input--width-10",
+                label: { html: variable.description + '<span class="govuk-visually-hidden"> (' + domain.description  + ')</span>' },
+                errorMessage: validationErrors | findError(variable.code),
+                value: variables[variable.code]
+              }) }}
+
+              {{ govukButton({
+                name: "reload",
+                text: "Reload image preview",
+                preventDoubleClick: true
+              }) }}
+          </div>
+          {% if variables[variable.code] %}
+            <img class="govuk-!-margin-bottom-3" src="/prisoner-image/{{ variables[variable.code] }}" alt="Image of person" loading="lazy">
+          {% endif %}
+        {% elseif r/_ADDRESS$/.test(variable.code) %}
           {{ govukTextarea({
             name: variable.code,
             label: { html: variable.description + '<span class="govuk-visually-hidden"> (' + domain.description  + ')</span>'  },
@@ -57,6 +76,7 @@
 
     <div class="govuk-button-group">
       {{ govukButton({
+        name: "download",
         text: "Generate and download",
         preventDoubleClick: true
       }) }}

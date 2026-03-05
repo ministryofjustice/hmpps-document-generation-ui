@@ -24,6 +24,28 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/templates/{id}/document': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * @description Requires one of the following roles:
+     *     * ROLE_DOCUMENT_GENERATION__DOCUMENT_GENERATION_UI
+     *     * ROLE_DOCUMENT_GENERATION__DOCUMENT_GENERATION__RO
+     *     * ROLE_DOCUMENT_GENERATION__DOCUMENT_GENERATION__RW
+     */
+    post: operations['generateDocumentFromTemplate']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/variables': {
     parameters: {
       query?: never
@@ -132,6 +154,12 @@ export interface components {
       /** Format: uuid */
       id: string
     }
+    TemplateGenerationRequest: {
+      filename: string
+      variables: {
+        [key: string]: unknown
+      }
+    }
     TemplateVariables: {
       domains: components['schemas']['TemplateVariables.Domain'][]
     }
@@ -207,6 +235,36 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['TemplateResponse']
+        }
+      }
+    }
+  }
+  generateDocumentFromTemplate: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: {
+      content: {
+        'application/json': {
+          data: components['schemas']['TemplateGenerationRequest']
+          /** Format: binary */
+          image?: string
+        }
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/octet-stream': string
         }
       }
     }

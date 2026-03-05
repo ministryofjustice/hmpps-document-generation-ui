@@ -1,12 +1,13 @@
+import { format } from 'date-fns'
 import { Services } from '../../services'
 import { ApiRequestContext } from '../../data/customRestClient'
 import { formatAddress } from '../../utils/format'
 import { convertToTitleCase } from '../../utils/utils'
 
-export type GenerateDocumentQuery = { prisonId?: string; prisonNumber?: string }
+export type GenerateDocumentQuery = { prisonId?: string; prisonNumber?: string; absenceId?: string }
 
 export const mapTemplateVariables = async (
-  { prisonerSearchService, prisonRegisterService }: Services,
+  { prisonerSearchService, prisonRegisterService, externalMovementsService }: Services,
   context: ApiRequestContext,
   query: GenerateDocumentQuery,
 ) => {
@@ -36,5 +37,30 @@ export const mapTemplateVariables = async (
       variables['PERSON__SECURITY_CATEGORY'] = prisoner.category ?? ''
     }
   }
+
+  if (
+    query.absenceId &&
+    (context.res.locals.user.userRoles.includes('EXTERNAL_MOVEMENTS_TAP_RO') ||
+      context.res.locals.user.userRoles.includes('EXTERNAL_MOVEMENTS_TAP_RW'))
+  ) {
+    const absence = await externalMovementsService.getTapAuthorisation(context, query.absenceId)
+    if (absence) {
+      variables['TEMPORARY_ABSENCE__START_DATE'] = absence.start
+      variables['TEMPORARY_ABSENCE__START_TIME'] = absence.occurrences[0]?.start
+        ? format(absence.occurrences[0].start, 'HH:mm')
+        : ''
+      variables['TEMPORARY_ABSENCE__END_DATE'] = absence.end
+      variables['TEMPORARY_ABSENCE__END_TIME'] = absence.occurrences[0]?.start
+        ? format(absence.occurrences[0].end, 'HH:mm')
+        : ''
+      variables['TEMPORARY_ABSENCE__CATEGORISATION'] =
+        absence.absenceReason?.description ??
+        absence.absenceReasonCategory?.description ??
+        absence.absenceSubType?.description ??
+        absence.absenceType?.description ??
+        ''
+    }
+  }
+
   return variables
 }

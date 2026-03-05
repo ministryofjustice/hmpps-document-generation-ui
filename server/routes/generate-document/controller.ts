@@ -23,17 +23,17 @@ export class GenerateDocumentController {
       showBreadcrumbs: true,
       template,
       homeUrl,
-      prisonDomain: template.variables.domains.find(({ code }) => code === 'PRISON'),
-      prisonerDomain: template.variables.domains.find(({ code }) => code === 'PERSON'),
       prison: res.locals.formResponses?.['prison'] ?? req.query.prisonId,
       prisoner: res.locals.formResponses?.['prisoner'] ?? req.query.prisonNumber,
+      absenceId: res.locals.formResponses?.['absenceId'] ?? req.query.absenceId,
     })
   }
 
   POST = async (req: Request<{ id: string }>, res: Response) => {
     const query = new URLSearchParams({
-      ...(req.body.prison ? { prisonId: req.body.prison.prisonId } : {}),
-      ...(req.body.prisoner ? { prisonNumber: req.body.prisoner.prisonerNumber } : {}),
+      ...(req.body.prison ? { prisonId: req.body.prison } : {}),
+      ...(req.body.prisoner ? { prisonNumber: req.body.prisoner } : {}),
+      ...(req.body.absenceId ? { absenceId: req.body.absenceId } : {}),
     })
 
     res.redirect(`/download-document/${req.params.id}?${query.toString()}`)

@@ -3,7 +3,7 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
-import { initialiseName, setCheckedValue, setSelectedValue } from './utils'
+import { hasVariableDomain, initialiseName, setCheckedValue, setSelectedValue } from './utils'
 import config from '../config'
 import logger from '../../logger'
 import applicationInfo from '../applicationInfo'
@@ -67,4 +67,5 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('setSelectedValue', setSelectedValue)
   njkEnv.addFilter('setCheckedValue', setCheckedValue)
   njkEnv.addFilter('removeNullish', arr => arr.filter(Boolean))
+  njkEnv.addFilter('hasVariableDomain', hasVariableDomain)
 }

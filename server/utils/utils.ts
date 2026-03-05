@@ -1,3 +1,5 @@
+import { components } from '../@types/documentGeneration'
+
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0]!.toUpperCase() + word.toLowerCase().slice(1) : word
 
@@ -44,3 +46,6 @@ export const setCheckedValue = (
     checked: entry && Array.isArray(selected) ? selected.includes(entry.value) : entry.value === selected,
   }))
 }
+
+export const hasVariableDomain = (template: components['schemas']['TemplateDetail'], domainCode: string) =>
+  template.variables.domains.find(({ code }) => code === domainCode)
