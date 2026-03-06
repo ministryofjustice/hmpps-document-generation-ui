@@ -29,6 +29,7 @@ import { handleApiError } from './middleware/validation/handleApiError'
 import handleFileUpload from './middleware/validation/handleFileUpload'
 
 import './utils/superagentMultipartRequestFix'
+import PrisonerImageRoutes from './routes/prisonerImageRoutes'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -72,6 +73,8 @@ export default function createApp(services: Services): express.Application {
 
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
+
+  app.get('/prisoner-image/:prisonNumber', new PrisonerImageRoutes(services.prisonApiService).GET)
 
   app.get(
     /(.*)/,

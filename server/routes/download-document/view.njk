@@ -4,10 +4,10 @@
 {%- from "govuk/components/textarea/macro.njk" import govukTextarea -%}
 {%- from "govuk/components/summary-list/macro.njk" import govukSummaryList -%}
 
-{% set pageTitle = 'Generate document - Document generation' %}
+{% set pageTitle = 'Download document - Document generation' %}
 
 {% block innerContent %}
-  <h1 class="govuk-heading-l">Generate document</h1>
+  <h1 class="govuk-heading-l">Download document</h1>
 
   {{ govukSummaryList({
     card: {
@@ -37,7 +37,26 @@
     {% for domain in template.variables.domains %}
       <h3 class="govuk-heading-s">{{ domain.description }}</h3>
       {% for variable in domain.variables %}
-        {% if r/_ADDRESS$/.test(variable.code) %}
+        {% if variable.code === 'PERSON__IMAGE' %}
+          <div class="horizontal-form govuk-!-margin-bottom-5">
+              {{ govukInput({
+                name: variable.code,
+                classes: "govuk-input--width-10",
+                label: { html: variable.description + '<span class="govuk-visually-hidden"> (' + domain.description  + ')</span>' },
+                errorMessage: validationErrors | findError(variable.code),
+                value: variables[variable.code]
+              }) }}
+
+              {{ govukButton({
+                name: "reload",
+                text: "Reload image preview",
+                preventDoubleClick: true
+              }) }}
+          </div>
+          {% if variables[variable.code] %}
+            <img class="govuk-!-margin-bottom-3" src="/prisoner-image/{{ variables[variable.code] }}" alt="Image of person" loading="lazy">
+          {% endif %}
+        {% elseif r/_ADDRESS$/.test(variable.code) %}
           {{ govukTextarea({
             name: variable.code,
             label: { html: variable.description + '<span class="govuk-visually-hidden"> (' + domain.description  + ')</span>'  },
@@ -57,16 +76,26 @@
 
     <div class="govuk-button-group">
       {{ govukButton({
+        name: "download",
         text: "Generate and download",
         preventDoubleClick: true
       }) }}
 
-      {{ govukButton({
-        classes: "govuk-button--secondary",
-        text: "Back to document generation",
-        href: homeUrl,
-        preventDoubleClick: true
-      }) }}
+      {% if returnTo %}
+        {{ govukButton({
+          classes: "govuk-button--secondary",
+          text: "Exit",
+          href: returnTo,
+          preventDoubleClick: true
+        }) }}
+      {% else %}
+        {{ govukButton({
+          classes: "govuk-button--secondary",
+          text: "Back to document generation",
+          href: homeUrl,
+          preventDoubleClick: true
+        }) }}
+      {% endif %}
     </div>
   </form>
 {% endblock %}

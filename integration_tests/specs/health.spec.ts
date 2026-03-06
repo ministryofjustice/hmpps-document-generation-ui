@@ -7,6 +7,7 @@ import { stubDocumentGenerationPing } from '../mockApis/documentGenerationApi'
 import { stubPrisonApiHealth } from '../mockApis/prisonApi'
 import { stubPrisonerSearchPing } from '../mockApis/prisonerSearchApi'
 import { stubPrisonRegisterApiHealth } from '../mockApis/prisonRegisterApi'
+import { stubExternalMovementsApiHealth } from '../mockApis/externalMovementsApi'
 
 test.describe('Health', () => {
   test.beforeEach(async () => {
@@ -22,6 +23,7 @@ test.describe('Health', () => {
         stubPrisonApiHealth(),
         stubPrisonerSearchPing(),
         stubPrisonRegisterApiHealth(),
+        stubExternalMovementsApiHealth(),
       ])
     })
 

@@ -69,4 +69,19 @@ export default class DocumentGenerationService {
   async getTemplateVariables(context: ApiRequestContext) {
     return this.apiClient.withContext(context).get<components['schemas']['TemplateVariables']>({ path: '/variables ' })
   }
+
+  async generateDocument(
+    context: ApiRequestContext,
+    id: string,
+    filename: string,
+    variables: { [key: string]: unknown },
+    image: { buffer: Buffer; originalname: string } | null,
+  ) {
+    return this.apiClient.withContext(context).post<Buffer>({
+      path: `/templates/${id}/document`,
+      responseType: 'application/msword',
+      multipartData: { data: { filename, variables } },
+      ...(image ? { files: { image } } : {}),
+    })
+  }
 }
