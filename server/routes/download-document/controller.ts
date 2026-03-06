@@ -17,8 +17,6 @@ export class DownloadDocumentController {
       this.services.documentGenerationService.getGroups({ res }).then(result => result.groups),
     ])
 
-    console.log(req.query.returnTo)
-
     const returnTo = permittedRedirect(req.query.returnTo)
 
     const homeUrl = `/?group=${template.groups[0]?.code ?? groups[0]!.code}`
