@@ -25,3 +25,4 @@ generic-service:
 
 generic-prometheus-alerts:
   alertSeverity: move-and-improve-alerts-non-prod
+  businessHoursOnly: true
