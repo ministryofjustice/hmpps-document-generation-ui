@@ -75,13 +75,13 @@ export default class DocumentGenerationService {
     id: string,
     filename: string,
     variables: { [key: string]: unknown },
-    image: { buffer: Buffer; originalname: string } | null,
+    prisonerImage: { buffer: Buffer; originalname: string } | null,
   ) {
     return this.apiClient.withContext(context).post<Buffer>({
       path: `/templates/${id}/document`,
       responseType: 'application/msword',
       multipartData: { data: { filename, variables } },
-      ...(image ? { files: { image } } : {}),
+      ...(prisonerImage ? { files: { perImage: prisonerImage } } : {}),
     })
   }
 }
