@@ -37,7 +37,7 @@
     {% for domain in template.variables.domains %}
       <h3 class="govuk-heading-s">{{ domain.description }}</h3>
       {% for variable in domain.variables %}
-        {% if variable.code === 'PERSON__IMAGE' %}
+        {% if variable.code === 'perImage' %}
           <div class="horizontal-form govuk-!-margin-bottom-5">
               {{ govukInput({
                 name: variable.code,
@@ -56,7 +56,7 @@
           {% if variables[variable.code] %}
             <img class="govuk-!-margin-bottom-3" src="/prisoner-image/{{ variables[variable.code] }}" alt="Image of person" loading="lazy">
           {% endif %}
-        {% elseif r/_ADDRESS$/.test(variable.code) %}
+        {% elseif r/Address$/.test(variable.code) %}
           {{ govukTextarea({
             name: variable.code,
             label: { html: variable.description + '<span class="govuk-visually-hidden"> (' + domain.description  + ')</span>'  },

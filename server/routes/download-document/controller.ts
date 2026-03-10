@@ -42,9 +42,9 @@ export class DownloadDocumentController {
       const template = await this.services.documentGenerationService.getTemplateById({ res }, req.params.id)
 
       let image: { buffer: Buffer; originalname: string } | null = null
-      if (req.body['PERSON__IMAGE']) {
-        const buffer = await this.services.prisonApiService.getPrisonerImageAsBuffer({ res }, req.body['PERSON__IMAGE'])
-        image = { buffer, originalname: `${req.body['PERSON__IMAGE']}.png` }
+      if (req.body['perImage']) {
+        const buffer = await this.services.prisonApiService.getPrisonerImageAsBuffer({ res }, req.body['perImage'])
+        image = { buffer, originalname: `${req.body['perImage']}.png` }
       }
 
       let filename = template.code
