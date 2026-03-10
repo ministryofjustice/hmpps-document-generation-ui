@@ -35,7 +35,7 @@ export const mapTemplateVariables = async (
       variables['perPrsnNo'] = prisoner.prisonerNumber
       variables['perCro'] = prisoner.croNumber ?? ''
       variables['perPnc'] = prisoner.pncNumber ?? ''
-      variables['perbookNo'] = prisoner.bookNumber ?? ''
+      variables['perBookNo'] = prisoner.bookNumber ?? ''
       variables['perDob'] = prisoner.dateOfBirth
       variables['perSecCat'] = prisoner.category ?? ''
     }
