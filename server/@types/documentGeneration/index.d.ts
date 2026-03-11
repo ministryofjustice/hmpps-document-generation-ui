@@ -185,6 +185,7 @@ export interface components {
       code: string
       name: string
       description: string
+      instructionText?: string
       groups: components['schemas']['NamedDescription'][]
       variables: components['schemas']['TemplateVariables']
     }
