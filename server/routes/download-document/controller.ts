@@ -4,6 +4,7 @@ import { Services } from '../../services'
 import { FLASH_KEY__FORM_RESPONSES } from '../../utils/constants'
 import { GenerateDocumentQuery, mapTemplateVariables } from './utils'
 import { permittedRedirect } from '../../utils/permittedRedirect'
+import logger from '../../../logger'
 
 export class DownloadDocumentController {
   constructor(readonly services: Services) {}
@@ -43,8 +44,12 @@ export class DownloadDocumentController {
 
       let image: { buffer: Buffer; originalname: string } | null = null
       if (req.body['perImage']) {
-        const buffer = await this.services.prisonApiService.getPrisonerImageAsBuffer({ res }, req.body['perImage'])
-        image = { buffer, originalname: `${req.body['perImage']}.png` }
+        try {
+          const buffer = await this.services.prisonApiService.getPrisonerImageAsBuffer({ res }, req.body['perImage'])
+          image = { buffer, originalname: `${req.body['perImage']}.png` }
+        } catch (error) {
+          logger.warn(error, `Unable to get image for Prison number ${req.body['perImage']}`)
+        }
       }
 
       let filename = template.code
