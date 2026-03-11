@@ -63,12 +63,14 @@ export const testGroups: components['schemas']['TemplateGroups'] = {
       name: 'External movement templates',
       description:
         'Document templates associated with external movements in general. These require a person to be selected',
+      roles: ['EXTERNAL_MOVEMENTS_TAP_RO', 'EXTERNAL_MOVEMENTS_TAP_RW'],
     },
     {
       code: 'TEMPORARY_ABSENCE',
       name: 'Temporary absence templates',
       description:
         'Document templates associated with temporary absences. These require a person and a temporary absence to be selected',
+      roles: ['EXTERNAL_MOVEMENTS_TAP_RO', 'EXTERNAL_MOVEMENTS_TAP_RW'],
     },
   ],
 }
@@ -79,6 +81,7 @@ export const testTemplates: components['schemas']['TemplateGroupTemplates'] = {
     name: 'External movement templates',
     description:
       'Document templates associated with external movements in general. These require a person to be selected',
+    roles: ['EXTERNAL_MOVEMENTS_TAP_RO', 'EXTERNAL_MOVEMENTS_TAP_RW'],
   },
   templates: [
     {

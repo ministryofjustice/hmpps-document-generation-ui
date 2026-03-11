@@ -140,6 +140,7 @@ export interface components {
       code: string
       name: string
       description?: string
+      instructionText?: string
       variables: components['schemas']['TemplateRequest.Variable'][]
       groups: components['schemas']['TemplateRequest.Group'][]
     }
@@ -154,7 +155,7 @@ export interface components {
       /** Format: uuid */
       id: string
     }
-    TemplateGenerationRequest: {
+    GenerateFromTemplate: {
       filename: string
       variables: {
         [key: string]: unknown
@@ -174,10 +175,11 @@ export interface components {
       /** @enum {string} */
       type: 'BINARY' | 'DATE' | 'STRING' | 'TIME'
     }
-    NamedDescription: {
+    Group: {
       code: string
       name: string
       description: string
+      roles: string[]
     }
     TemplateDetail: {
       /** Format: uuid */
@@ -185,14 +187,15 @@ export interface components {
       code: string
       name: string
       description: string
-      groups: components['schemas']['NamedDescription'][]
+      instructionText?: string
+      groups: components['schemas']['Group'][]
       variables: components['schemas']['TemplateVariables']
     }
     TemplateGroups: {
-      groups: components['schemas']['NamedDescription'][]
+      groups: components['schemas']['Group'][]
     }
     TemplateGroupTemplates: {
-      group: components['schemas']['NamedDescription']
+      group: components['schemas']['Group']
       templates: components['schemas']['TemplateSummary'][]
     }
     TemplateSummary: {
@@ -201,6 +204,7 @@ export interface components {
       code: string
       name: string
       description: string
+      instructionText?: string
     }
   }
   responses: never
@@ -214,7 +218,10 @@ export interface operations {
   createOrReplaceTemplate: {
     parameters: {
       query?: never
-      header?: never
+      header?: {
+        /** @description Relevant caseload id for the client identity in context e.g. the active caseload id of the logged in user. */
+        CaseloadId?: string
+      }
       path?: never
       cookie?: never
     }
@@ -242,7 +249,10 @@ export interface operations {
   generateDocumentFromTemplate: {
     parameters: {
       query?: never
-      header?: never
+      header?: {
+        /** @description Relevant caseload id for the client identity in context e.g. the active caseload id of the logged in user. */
+        CaseloadId?: string
+      }
       path: {
         id: string
       }
@@ -251,9 +261,9 @@ export interface operations {
     requestBody?: {
       content: {
         'application/json': {
-          data: components['schemas']['TemplateGenerationRequest']
+          data: components['schemas']['GenerateFromTemplate']
           /** Format: binary */
-          image?: string
+          perImage?: string
         }
       }
     }

@@ -31,6 +31,7 @@ export class AddTemplateController {
       code: res.locals.formResponses?.['code'],
       name: res.locals.formResponses?.['name'],
       description: res.locals.formResponses?.['description'],
+      instructionText: res.locals.formResponses?.['instructionText'],
       variables: res.locals.formResponses?.['variables'],
     })
   }
@@ -43,6 +44,7 @@ export class AddTemplateController {
           code: req.body.code,
           name: req.body.name,
           ...(req.body.description ? { description: req.body.description } : { description: '' }),
+          ...(req.body.instructionText ? { instructionText: req.body.instructionText } : { instructionText: '' }),
           groups: [{ code: req.body.group }],
           variables: req.body.variables.map(itm => ({ code: itm, required: false })),
         },

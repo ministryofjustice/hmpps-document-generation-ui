@@ -29,6 +29,7 @@ export const schemaFactory =
         }),
       name: z.string().min(1, { message: 'Enter a template name' }),
       description: z.string().transform(val => (val.trim().length ? val : null)),
+      instructionText: z.string().transform(val => (val.trim().length ? val : null)),
       file: z
         .object()
         .optional()

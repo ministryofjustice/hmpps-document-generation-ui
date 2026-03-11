@@ -3,11 +3,13 @@
 {%- from "govuk/components/input/macro.njk" import govukInput -%}
 {%- from "govuk/components/textarea/macro.njk" import govukTextarea -%}
 {%- from "govuk/components/summary-list/macro.njk" import govukSummaryList -%}
+{%- from "govuk/components/inset-text/macro.njk" import govukInsetText -%}
 
 {% set pageTitle = 'Download document - Document generation' %}
 
 {% block innerContent %}
-  <h1 class="govuk-heading-l">Download document</h1>
+  <span class="govuk-caption-l">Create and download documents</span>
+  <h1 class="govuk-heading-l">Create a {{ template.name }}</h1>
 
   {{ govukSummaryList({
     card: {
@@ -38,23 +40,14 @@
       <h3 class="govuk-heading-s">{{ domain.description }}</h3>
       {% for variable in domain.variables %}
         {% if variable.code === 'perImage' %}
-          <div class="horizontal-form govuk-!-margin-bottom-5">
-              {{ govukInput({
-                name: variable.code,
-                classes: "govuk-input--width-10",
-                label: { html: variable.description + '<span class="govuk-visually-hidden"> (' + domain.description  + ')</span>' },
-                errorMessage: validationErrors | findError(variable.code),
-                value: variables[variable.code]
-              }) }}
-
-              {{ govukButton({
-                name: "reload",
-                text: "Reload image preview",
-                preventDoubleClick: true
-              }) }}
-          </div>
+          {{ govukInput({
+            formGroup: { classes: "govuk-!-display-none" },
+            name: variable.code,
+            value: variables[variable.code]
+          }) }}
           {% if variables[variable.code] %}
-            <img class="govuk-!-margin-bottom-3" src="/prisoner-image/{{ variables[variable.code] }}" alt="Image of person" loading="lazy">
+            <label class="govuk-label" for="perImage">{{ variable.description }}</label>
+            <img name="perImage" class="govuk-!-margin-bottom-3" src="/prisoner-image/{{ variables[variable.code] }}" alt="Image of person" loading="lazy">
           {% endif %}
         {% elseif r/Address$/.test(variable.code) %}
           {{ govukTextarea({
@@ -64,15 +57,26 @@
             value: variables[variable.code]
           }) }}
         {% else %}
+          {% set readOnly = (domain.code === 'PERSON' or domain.code === 'PRISON') and variable.code !== 'prsnPhone' %}
+
           {{ govukInput({
             name: variable.code,
             label: { html: variable.description + '<span class="govuk-visually-hidden"> (' + domain.description  + ')</span>' },
             errorMessage: validationErrors | findError(variable.code),
-            value: variables[variable.code]
+            value: variables[variable.code],
+            hint: { text: 'Not editable' } if readOnly else undefined,
+            classes: 'default-cursor' if readOnly else undefined,
+            attributes: { readonly: 'true' } if readOnly else {}
           }) }}
         {% endif %}
       {% endfor %}
     {% endfor %}
+
+    {% if template.instructionText %}
+      {{ govukInsetText({
+        text: template.instructionText
+      }) }}
+    {% endif %}
 
     <div class="govuk-button-group">
       {{ govukButton({

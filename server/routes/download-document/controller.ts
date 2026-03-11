@@ -56,11 +56,13 @@ export class DownloadDocumentController {
       if (req.query.prisonNumber) filename = `${filename}_${req.query.prisonNumber}`
       filename = `${filename}_${res.locals.user.username}_${format(new Date(), 'yyyy-MM-dd_HH-mm-ss')}.docx`
 
+      const { perImage, ...variables } = req.body
+
       const document = await this.services.documentGenerationService.generateDocument(
         { res },
         req.params.id,
         filename,
-        req.body,
+        variables,
         image,
       )
 

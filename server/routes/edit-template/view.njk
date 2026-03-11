@@ -46,6 +46,14 @@
       value: description
     }) }}
 
+    {{ govukTextarea({
+      name: "instructionText",
+      label: { text: "Instruction text (optional)" },
+      hint: { text: "Instruction shown to user on download document page" },
+      errorMessage: validationErrors | findError('instructionText'),
+      value: instructionText
+    }) }}
+
     {{ govukFileUpload({
       name: "file",
       label: { text: "Upload a new file (optional)" },

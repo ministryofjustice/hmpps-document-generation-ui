@@ -30,6 +30,7 @@ export class EditTemplateController {
       code: res.locals.formResponses?.['code'] ?? template.code,
       name: res.locals.formResponses?.['name'] ?? template.name,
       description: res.locals.formResponses?.['description'] ?? template.description,
+      instructionText: res.locals.formResponses?.['instructionText'] ?? template.instructionText,
       variables:
         res.locals.formResponses?.['variables'] ||
         template.variables.domains.flatMap(domain => domain.variables.map(variable => variable.code)),
@@ -45,6 +46,7 @@ export class EditTemplateController {
           code: req.body.code,
           name: req.body.name,
           ...(req.body.description ? { description: req.body.description } : { description: '' }),
+          ...(req.body.instructionText ? { instructionText: req.body.instructionText } : { instructionText: '' }),
           groups: [{ code: req.body.group }],
           variables: req.body.variables.map(itm => ({ code: itm, required: false })),
         },
