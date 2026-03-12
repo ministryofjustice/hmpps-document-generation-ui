@@ -55,7 +55,6 @@ test.describe('SignIn', () => {
     await tokenVerification.stubVerifyToken(true)
     await login(page, { name: 'Another Tester', roles: ['INVALID_ROLE'] })
 
-    await expect(page.getByRole('heading', { name: 'Authorisation Error' })).toBeVisible()
-    await expect(page.getByText('You are not authorised to use this application.')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'You do not have permission to access this page' })).toBeVisible()
   })
 })

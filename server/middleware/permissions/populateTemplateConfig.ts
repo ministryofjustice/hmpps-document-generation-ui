@@ -22,6 +22,10 @@ export const populateTemplateConfig = (
   },
 ): RequestHandler<{ id: string }> => {
   return async (req, res, next) => {
+    if (requireAdminRole && !hasRole(res.locals.user, [AuthorisedRoles.DOCUMENT_GENERATION_RW])) {
+      return res.notAuthorised()
+    }
+
     if (!req.method.match(/GET/i)) {
       return next()
     }
@@ -56,9 +60,6 @@ export const populateTemplateConfig = (
 
     await Promise.all(apiRequests)
 
-    if (requireAdminRole && !hasRole(res.locals.user, [AuthorisedRoles.DOCUMENT_GENERATION_RW])) {
-      return res.notAuthorised()
-    }
     if (getGroups && !req.middleware.groups?.length) {
       return res.notAuthorised()
     }

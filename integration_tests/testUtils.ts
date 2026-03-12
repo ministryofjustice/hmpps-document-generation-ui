@@ -6,7 +6,7 @@ import { stubGetCaseLoads } from './mockApis/prisonApi'
 
 export { resetStubs }
 
-const DEFAULT_ROLES = ['ROLE_DOCUMENT_GENERATION_RW']
+const DEFAULT_ROLES = ['ROLE_DOCUMENT_GENERATION_RW', 'ROLE_EXTERNAL_MOVEMENTS_TAP_RW']
 
 export const attemptHmppsAuthLogin = async (page: Page) => {
   await page.goto('/')
