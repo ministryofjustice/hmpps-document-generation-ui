@@ -11,10 +11,14 @@ import { FLASH_KEY__SUCCESS_BANNER } from '../utils/constants'
 import { EditTemplateRoutes } from './edit-template/routes'
 import { GenerateDocumentRoutes } from './generate-document/routes'
 import { DownloadDocumentRoutes } from './download-document/routes'
+import { populateTemplateConfig } from '../middleware/permissions/populateTemplateConfig'
 
 export default function routes(services: Services): Router {
   const { router, get } = BaseRouter()
-  const controller = new HomepageController(services.documentGenerationService)
+
+  const { documentGenerationService } = services
+
+  const controller = new HomepageController(documentGenerationService)
 
   router.use(breadcrumbs())
 
@@ -25,12 +29,28 @@ export default function routes(services: Services): Router {
     next()
   })
 
-  get('/', Page.HOMEPAGE, controller.GET)
+  get('/', Page.HOMEPAGE, populateTemplateConfig(documentGenerationService, {}), controller.GET)
 
-  router.use('/add-template', AddTemplateRoutes(services))
-  router.use('/edit-template/:id', EditTemplateRoutes(services))
-  router.use('/generate-document/:id', GenerateDocumentRoutes(services))
-  router.use('/download-document/:id', DownloadDocumentRoutes(services))
+  router.use(
+    '/add-template',
+    populateTemplateConfig(documentGenerationService, { getVariables: true }),
+    AddTemplateRoutes(services),
+  )
+  router.use(
+    '/edit-template/:id',
+    populateTemplateConfig(documentGenerationService, { getVariables: true, getTemplate: true }),
+    EditTemplateRoutes(services),
+  )
+  router.use(
+    '/generate-document/:id',
+    populateTemplateConfig(documentGenerationService, { getTemplate: true }),
+    GenerateDocumentRoutes(services),
+  )
+  router.use(
+    '/download-document/:id',
+    populateTemplateConfig(documentGenerationService, { getTemplate: true, requireAdminRole: false }),
+    DownloadDocumentRoutes(services),
+  )
 
   return router
 }

@@ -15,8 +15,8 @@ export const schemaFactory =
 
     for (const domain of template.variables.domains) {
       for (const variable of domain.variables) {
-        props[variable.code] = z.string().regex(/^[a-zA-Z0-9\s.,'"\-/()&+#:@]*$/, {
-          message: `${variable.description} (${domain.description}) only accepts alphanumeric characters, space and the following symbols: . , ' " - / ( ) & + # : @`,
+        props[variable.code] = z.string().regex(/^[\w\s£%=,.:"'&#@?()+\-/\\]*$/, {
+          message: `${variable.description} (${domain.description}) only accepts alphanumeric characters, space and the following symbols: £ % = , . : " ' & # @ ? ( ) + - / \\ _`,
         })
       }
     }

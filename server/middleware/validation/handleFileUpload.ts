@@ -15,6 +15,7 @@ export default function handleFileUpload(): Router {
 export const uploadedFileTooLargeHandler: ErrorRequestHandler = (err: Error, req, _res, next): void => {
   if (!(err instanceof MulterError) && (err as MulterError).code !== 'LIMIT_FILE_SIZE') return next(err)
 
-  req.fileError = 'The selected file must be smaller than 1MB'
+  req.middleware ??= {}
+  req.middleware.fileError = 'The selected file must be smaller than 1MB'
   return next()
 }

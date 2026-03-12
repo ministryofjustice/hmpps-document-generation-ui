@@ -7,11 +7,9 @@ export class EditTemplateController {
   constructor(readonly documentGenerationService: DocumentGenerationService) {}
 
   GET = async (req: Request<{ id: string }>, res: Response) => {
-    const [template, groups, supportedVariables] = await Promise.all([
-      this.documentGenerationService.getTemplateById({ res }, req.params.id),
-      this.documentGenerationService.getGroups({ res }).then(result => result.groups),
-      this.documentGenerationService.getTemplateVariables({ res }).then(result => result.domains),
-    ])
+    const template = req.middleware!.template!
+    const groups = req.middleware!.groups!
+    const supportedVariables = req.middleware!.supportedVariables!
 
     res.locals.breadcrumbs.addItems({
       text: 'Document generation',

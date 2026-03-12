@@ -21,7 +21,6 @@ import routes from './routes'
 import type { Services } from './services'
 import logger from '../logger'
 import config from './config'
-import { AuthorisedRoles } from './middleware/permissions/authorisedRoles'
 import sentryMiddleware from './middleware/sentryMiddleware'
 import { auditPageViewMiddleware } from './middleware/audit/auditPageViewMiddleware'
 import { auditApiCallMiddleware } from './middleware/audit/auditApiCallMiddleware'
@@ -64,7 +63,7 @@ export default function createApp(services: Services): express.Application {
     },
   )
 
-  app.use(authorisationMiddleware([AuthorisedRoles.DOCUMENT_GENERATION_RW]))
+  app.use(authorisationMiddleware([]))
 
   /*
   For multipart form data, the Multer middleware must run before the csrf middleware in order to handle CSRF tokens properly.
