@@ -7,10 +7,8 @@ export class AddTemplateController {
   constructor(readonly documentGenerationService: DocumentGenerationService) {}
 
   GET = async (req: Request, res: Response) => {
-    const [groups, supportedVariables] = await Promise.all([
-      this.documentGenerationService.getGroups({ res }).then(result => result.groups),
-      this.documentGenerationService.getTemplateVariables({ res }).then(result => result.domains),
-    ])
+    const groups = req.middleware!.groups!
+    const supportedVariables = req.middleware!.supportedVariables!
 
     const activeGroupCode = groups.find(itm => itm.code === req.query['group'])?.code ?? groups[0]!.code
 

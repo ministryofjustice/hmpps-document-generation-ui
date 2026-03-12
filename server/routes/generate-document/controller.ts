@@ -6,10 +6,8 @@ export class GenerateDocumentController {
   constructor(readonly documentGenerationService: DocumentGenerationService) {}
 
   GET = async (req: Request<{ id: string }, unknown, unknown, GenerateDocumentQuery>, res: Response) => {
-    const [template, groups] = await Promise.all([
-      this.documentGenerationService.getTemplateById({ res }, req.params.id),
-      this.documentGenerationService.getGroups({ res }).then(result => result.groups),
-    ])
+    const template = req.middleware!.template!
+    const groups = req.middleware!.groups!
 
     const homeUrl = `/?group=${template.groups[0]?.code ?? groups[0]!.code}`
 

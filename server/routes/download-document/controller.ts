@@ -13,10 +13,8 @@ export class DownloadDocumentController {
     req: Request<{ id: string }, unknown, unknown, GenerateDocumentQuery & { returnTo?: string }>,
     res: Response,
   ) => {
-    const [template, groups] = await Promise.all([
-      this.services.documentGenerationService.getTemplateById({ res }, req.params.id),
-      this.services.documentGenerationService.getGroups({ res }).then(result => result.groups),
-    ])
+    const template = req.middleware!.template!
+    const groups = req.middleware!.groups!
 
     const returnTo = permittedRedirect(req.query.returnTo)
 

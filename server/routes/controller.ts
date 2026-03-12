@@ -5,7 +5,7 @@ export class HomepageController {
   constructor(readonly documentGenerationService: DocumentGenerationService) {}
 
   GET = async (req: Request, res: Response) => {
-    const { groups } = await this.documentGenerationService.getGroups({ res })
+    const groups = req.middleware!.groups!
 
     const activeGroupCode = groups.find(itm => itm.code === req.query['group'])?.code ?? groups[0]!.code
 

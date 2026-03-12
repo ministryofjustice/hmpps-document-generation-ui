@@ -1,6 +1,7 @@
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import { CaseLoad } from '../../interfaces/caseLoad'
 import { Breadcrumbs } from '../../middleware/breadcrumbs'
+import { components } from '../documentGeneration'
 
 export declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
@@ -21,7 +22,14 @@ export declare global {
       verified?: boolean
       id: string
       logout(done: (err: unknown) => void): void
-      fileError?: string
+
+      middleware?: {
+        fileError?: string
+
+        groups?: components['schemas']['Group'][]
+        supportedVariables?: components['schemas']['TemplateVariables.Domain'][]
+        template?: components['schemas']['TemplateDetail']
+      }
     }
 
     interface Response {

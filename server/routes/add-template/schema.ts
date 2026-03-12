@@ -34,8 +34,8 @@ export const schemaFactory =
         .object()
         .optional()
         .transform((_val, ctx) => {
-          if (req.fileError) {
-            ctx.addIssue({ code: 'custom', message: req.fileError })
+          if (req.middleware?.fileError) {
+            ctx.addIssue({ code: 'custom', message: req.middleware.fileError })
             return z.NEVER
           }
           if (!req.file) {
