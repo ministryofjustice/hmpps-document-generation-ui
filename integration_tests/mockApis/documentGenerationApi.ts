@@ -22,10 +22,24 @@ export const stubGetTemplateGroups = (response: components['schemas']['TemplateG
     response,
   })
 
+export const stubGetTemplateVariables = (response: components['schemas']['TemplateVariables'] = testVariables) =>
+  successStub({
+    method: 'GET',
+    url: '/document-generation-api/variables',
+    response,
+  })
+
 export const stubGetTemplates = (response: components['schemas']['TemplateGroupTemplates'] = testTemplates) =>
   successStub({
     method: 'GET',
     url: `/document-generation-api/groups/${response.group.code}`,
+    response,
+  })
+
+export const stubPutTemplate = (response: components['schemas']['TemplateResponse'] = { id: 'new-template-id' }) =>
+  successStub({
+    method: 'PUT',
+    url: `/document-generation-api/templates`,
     response,
   })
 

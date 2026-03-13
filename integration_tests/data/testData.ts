@@ -107,7 +107,7 @@ export const testVariables: components['schemas']['TemplateVariables'] = {
       variables: [
         {
           code: 'PERSON__NAME',
-          description: 'Name',
+          description: 'Full name',
           type: 'STRING',
         },
       ],

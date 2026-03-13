@@ -31,6 +31,8 @@ export default class DocumentGenerationService {
     template: components['schemas']['TemplateRequest'],
     file: { buffer: Buffer; originalname: string },
   ) {
+    logger.debug(template)
+    logger.debug(file)
     return this.apiClient.withContext(context).put<components['schemas']['TemplateResponse']>({
       path: '/templates',
       multipartData: { template },

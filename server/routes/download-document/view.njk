@@ -74,7 +74,7 @@
 
     {% if template.instructionText %}
       {{ govukInsetText({
-        text: template.instructionText
+        html: template.instructionText | escape | nl2br
       }) }}
     {% endif %}
 
