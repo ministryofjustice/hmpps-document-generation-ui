@@ -2,12 +2,23 @@
 {%- from "moj/components/sub-navigation/macro.njk" import mojSubNavigation -%}
 {%- from "govuk/components/button/macro.njk" import govukButton -%}
 {%- from "govuk/components/table/macro.njk" import govukTable -%}
+{%- from "moj/components/page-header-actions/macro.njk" import mojPageHeaderActions -%}
 
 {% set fullWidth = true %}
 {% set pageTitle = 'Document generation' %}
 
 {% block innerContent %}
-  <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Document generation</h1>
+  {{ mojPageHeaderActions({
+    heading: {
+      classes: "govuk-!-margin-bottom-6",
+      text: "Document generation"
+    },
+    items: [{
+      text: "Add a template",
+      href: "/add-template?group=" + activeGroupCode,
+      preventDoubleClick: true
+    }]
+  }) }}
 
   {% set tabs = [] %}
   {% for group in groups %}
@@ -25,19 +36,6 @@
     items: tabs
   }) }}
 
-  <div class="moj-page-header-actions">
-    <div class="moj-page-header-actions__title govuk-!-width-two-thirds"></div>
-    <div class="moj-page-header-actions__actions">
-      <div class="moj-button-group moj-button-group--inline">
-        {{ govukButton({
-          text: "Add a template",
-          href: "/add-template?group=" + activeGroupCode,
-          preventDoubleClick: true
-        }) }}
-      </div>
-    </div>
-  </div>
-
   {% set rows = [] %}
   {% for template in templates %}
     {% set rows = (rows.push([
@@ -46,7 +44,7 @@
       },
       {
         classes: 'govuk-link govuk-link--no-visited-state',
-        html: '<a class="govuk-link govuk-link--no-visited-state" href="/edit-template/' + template.id + '">Edit<span class="govuk-visually-hidden"> for ' + template.name + '</span></a>'
+        html: '<a class="govuk-link govuk-link--no-visited-state" href="/edit-template/' + template.id + '">Edit<span class="govuk-visually-hidden"> ' + template.name + '</span></a>'
       },
       {
         classes: 'govuk-link govuk-link--no-visited-state',
@@ -56,24 +54,28 @@
     ]), rows) %}
   {% endfor %}
 
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-      {{ govukTable({
-        firstCellIsHeader: false,
-        head: [
-          {
-            text: "Name"
-          },
-          {
-            text: "Actions"
-          },
-          {
-            text: "",
-            format: "numeric"
-          }
-        ],
-        rows: rows
-      }) }}
+  {% if rows.length %}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        {{ govukTable({
+          firstCellIsHeader: false,
+          head: [
+            {
+              text: "Name"
+            },
+            {
+              text: "Actions"
+            },
+            {
+              text: "",
+              format: "numeric"
+            }
+          ],
+          rows: rows
+        }) }}
+      </div>
     </div>
-  </div>
+  {% else %}
+    <p>No templates found in this template group.</p>
+  {% endif %}
 {% endblock %}
