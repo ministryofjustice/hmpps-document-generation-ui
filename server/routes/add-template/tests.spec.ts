@@ -67,5 +67,6 @@ test.describe('/add-template', () => {
 
     // proceed to next page
     await new DocumentGenerationHomepage(page).verifyContent()
+    await expect(page.getByText('A new template “Test Template” has been created')).toBeVisible()
   })
 })
