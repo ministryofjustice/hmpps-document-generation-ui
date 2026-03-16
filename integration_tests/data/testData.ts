@@ -107,7 +107,7 @@ export const testVariables: components['schemas']['TemplateVariables'] = {
       variables: [
         {
           code: 'PERSON__NAME',
-          description: 'Name',
+          description: 'Full name',
           type: 'STRING',
         },
       ],
@@ -124,4 +124,14 @@ export const testVariables: components['schemas']['TemplateVariables'] = {
       ],
     },
   ],
+}
+
+export const testTemplateDetail: components['schemas']['TemplateDetail'] = {
+  id: 'template-1',
+  groups: [testGroups.groups[0]!],
+  variables: testVariables,
+  code: 'TMPL_1',
+  name: 'Test Template',
+  description: 'Lorem ipsum',
+  instructionText: 'dolor sit',
 }

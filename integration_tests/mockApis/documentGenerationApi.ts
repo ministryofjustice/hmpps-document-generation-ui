@@ -1,6 +1,6 @@
 import { stubFor, successStub } from './wiremock'
 import { components } from '../../server/@types/documentGeneration'
-import { testGroups, testTemplates, testVariables } from '../data/testData'
+import { testGroups, testTemplateDetail, testTemplates, testVariables } from '../data/testData'
 
 export const stubDocumentGenerationPing = (httpStatus = 200) =>
   stubFor({
@@ -22,6 +22,13 @@ export const stubGetTemplateGroups = (response: components['schemas']['TemplateG
     response,
   })
 
+export const stubGetTemplateVariables = (response: components['schemas']['TemplateVariables'] = testVariables) =>
+  successStub({
+    method: 'GET',
+    url: '/document-generation-api/variables',
+    response,
+  })
+
 export const stubGetTemplates = (response: components['schemas']['TemplateGroupTemplates'] = testTemplates) =>
   successStub({
     method: 'GET',
@@ -29,9 +36,16 @@ export const stubGetTemplates = (response: components['schemas']['TemplateGroupT
     response,
   })
 
-export const stubGetVariables = (response: components['schemas']['TemplateVariables'] = testVariables) =>
+export const stubPutTemplate = (response: components['schemas']['TemplateResponse'] = { id: 'new-template-id' }) =>
+  successStub({
+    method: 'PUT',
+    url: `/document-generation-api/templates`,
+    response,
+  })
+
+export const stubGetTemplateDetail = (response: components['schemas']['TemplateDetail'] = testTemplateDetail) =>
   successStub({
     method: 'GET',
-    url: '/document-generation-api/variables',
+    url: `/document-generation-api/templates/${response.id}`,
     response,
   })
