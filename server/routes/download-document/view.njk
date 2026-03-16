@@ -155,7 +155,7 @@
       {% endfor %}
 
       {% for item in prisonerDetails.variables or [] %}
-        {% if item.code === 'perImage' %}
+        {% if item.code === 'perImage' and variables[item.code] %}
           {% set rows = (rows.push(
             {
               key: { text: item.description },
