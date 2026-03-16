@@ -30,7 +30,7 @@
       {% endif %}
       {% for variable in domain.variables %}
         {% if (domain.code === 'PERSON' or domain.code === 'PRISON') and variable.code !== 'prsnPhone' %}
-          <input type="hidden" name="{{ variable.code }}" value="{{ variables[variable.code] }}"/>
+          <input type="hidden" name="{{ variable.code }}" value="{{ variables[variable.code] }}" readonly />
         {% elseif variable.type === 'DATE' %}
           {% if domain.variables[loop.index0 + 1].type === 'TIME' %}
           <div class="govuk-grid-row">
@@ -146,12 +146,21 @@
       {% set rows = [] %}
 
       {% for item in prisonDetails.variables or [] %}
-        {% set rows = (rows.push(
-          {
-            key: { text: item.description },
-            value: { text: variables[item.code] or 'Not provided' }
-          }
-        ), rows) %}
+        {% if r/(Address|Addr)$/.test(item.code) %}
+          {% set rows = (rows.push(
+            {
+              key: { text: item.description },
+              value: { text: (variables[item.code] or 'Not provided') | escape | nl2br }
+            }
+          ), rows) %}
+        {% else %}
+          {% set rows = (rows.push(
+            {
+              key: { text: item.description },
+              value: { text: variables[item.code] or 'Not provided' }
+            }
+          ), rows) %}
+        {% endif %}
       {% endfor %}
 
       {% for item in prisonerDetails.variables or [] %}
