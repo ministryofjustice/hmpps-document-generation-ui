@@ -13,12 +13,45 @@ export const schemaFactory =
 
     const template = await documentGenerationService.getTemplateById({ res }, req.params['id'] as string)
 
+    const timeVariableCodes: string[] = []
+
     for (const domain of template.variables.domains) {
       for (const variable of domain.variables) {
-        props[variable.code] = z.string().regex(/^[\w\s£%=,.:"'&#@?()+\-/\\]*$/, {
-          message: `${variable.description} (${domain.description}) only accepts alphanumeric characters, space and the following symbols: £ % = , . : " ' & # @ ? ( ) + - / \\ _`,
-        })
+        if (variable.type === 'TIME') {
+          timeVariableCodes.push(variable.code)
+
+          props[`${variable.code}Hour`] = z
+            .string()
+            .regex(/^\d*$/, {
+              message: `${variable.description} (${domain.description}) only accepts numeric characters`,
+            })
+            .transform(val => (val ? val.padStart(2, '0') : val))
+          props[`${variable.code}Minute`] = z
+            .string()
+            .regex(/^\d*$/, {
+              message: `${variable.description} (${domain.description}) only accepts numeric characters`,
+            })
+            .transform(val => (val ? val.padStart(2, '0') : val))
+        } else {
+          props[variable.code] = z.string().regex(/^[\w\s£%=,.:"'&#@?()+\-/\\]*$/, {
+            message: `${variable.description} (${domain.description}) only accepts alphanumeric characters, space and the following symbols: £ % = , . : " ' & # @ ? ( ) + - / \\ _`,
+          })
+        }
       }
+    }
+
+    if (timeVariableCodes) {
+      return createSchema(props).transform(val => {
+        const result = { ...val }
+        for (const code of timeVariableCodes) {
+          if (result[`${code}Hour`] || result[`${code}Minute`]) {
+            result[code] = `${result[`${code}Hour`] ?? ''}:${result[`${code}Minute`] ?? ''}`
+          }
+          delete result[`${code}Hour`]
+          delete result[`${code}Minute`]
+        }
+        return result
+      })
     }
 
     return createSchema(props)

@@ -3,6 +3,7 @@ import { Services } from '../../services'
 import { ApiRequestContext } from '../../data/customRestClient'
 import { formatAddress } from '../../utils/format'
 import { convertToTitleCase } from '../../utils/utils'
+import { components } from '../../@types/documentGeneration'
 
 export type GenerateDocumentQuery = { prisonId?: string; prisonNumber?: string; absenceId?: string }
 
@@ -36,7 +37,7 @@ export const mapTemplateVariables = async (
       variables['perCro'] = prisoner.croNumber ?? ''
       variables['perPnc'] = prisoner.pncNumber ?? ''
       variables['perBookNo'] = prisoner.bookNumber ?? ''
-      variables['perDob'] = prisoner.dateOfBirth
+      variables['perDob'] = prisoner.dateOfBirth ? format(prisoner.dateOfBirth, 'dd/MM/yyyy') : ''
       variables['perSecCat'] = prisoner.category ?? ''
     }
   }
@@ -48,10 +49,12 @@ export const mapTemplateVariables = async (
   ) {
     const absence = await externalMovementsService.getTapAuthorisation(context, query.absenceId)
     if (absence) {
-      variables['tapStartDate'] = absence.start
-      variables['tapStartTime'] = absence.occurrences[0]?.start ? format(absence.occurrences[0].start, 'HH:mm') : ''
-      variables['tapEndDate'] = absence.end
-      variables['tapEndTime'] = absence.occurrences[0]?.start ? format(absence.occurrences[0].end, 'HH:mm') : ''
+      variables['tapStartDate'] = format(absence.start, 'dd/MM/yyyy')
+      variables['tapStartTimeHour'] = absence.occurrences[0]?.start ? format(absence.occurrences[0].start, 'HH') : ''
+      variables['tapStartTimeMinute'] = absence.occurrences[0]?.start ? format(absence.occurrences[0].start, 'mm') : ''
+      variables['tapEndDate'] = format(absence.end, 'dd/MM/yyyy')
+      variables['tapEndTimeHour'] = absence.occurrences[0]?.start ? format(absence.occurrences[0].end, 'HH') : ''
+      variables['tapEndTimeMinute'] = absence.occurrences[0]?.start ? format(absence.occurrences[0].end, 'mm') : ''
       variables['tapCat'] =
         absence.absenceReason?.description ??
         absence.absenceReasonCategory?.description ??
@@ -62,4 +65,19 @@ export const mapTemplateVariables = async (
   }
 
   return variables
+}
+
+export const getReadOnlyVariables = (template: components['schemas']['TemplateDetail']) => {
+  const prisonDetails = template.variables.domains.find(({ code }) => code === 'PRISON')
+  const prisonerDetails = template.variables.domains.find(({ code }) => code === 'PERSON')
+
+  return {
+    prisonDetails: prisonDetails
+      ? {
+          ...prisonDetails,
+          variables: prisonDetails.variables.filter(({ code }) => code !== 'prsnPhone'),
+        }
+      : undefined,
+    prisonerDetails,
+  }
 }
