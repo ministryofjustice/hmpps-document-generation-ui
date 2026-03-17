@@ -173,7 +173,7 @@ export interface components {
       code: string
       description: string
       /** @enum {string} */
-      type: 'BINARY' | 'DATE' | 'STRING' | 'TIME'
+      type: 'BINARY' | 'DATE' | 'STRING' | 'TIME' | 'NUMBER'
     }
     Group: {
       code: string
@@ -205,6 +205,7 @@ export interface components {
       name: string
       description: string
       instructionText?: string
+      variableDomains: string[]
     }
   }
   responses: never

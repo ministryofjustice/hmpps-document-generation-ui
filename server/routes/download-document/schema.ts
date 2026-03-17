@@ -32,6 +32,10 @@ export const schemaFactory =
               message: `${variable.description} (${domain.description}) only accepts numeric characters`,
             })
             .transform(val => (val ? val.padStart(2, '0') : val))
+        } else if (variable.type === 'NUMBER') {
+          props[variable.code] = z.string().regex(/^\d*$/, {
+            message: `${variable.description} (${domain.description}) only accepts numeric characters`,
+          })
         } else {
           props[variable.code] = z.string().regex(/^[\w\s£%=,.:"'&#@?()+\-/\\]*$/, {
             message: `${variable.description} (${domain.description}) only accepts alphanumeric characters, space and the following symbols: £ % = , . : " ' & # @ ? ( ) + - / \\ _`,

@@ -22,6 +22,12 @@ export class DownloadDocumentController {
     const variables = res.locals.formResponses ?? (await mapTemplateVariables(this.services, { res }, req.query))
     const { prisonDetails, prisonerDetails } = getReadOnlyVariables(template)
 
+    const hasInputFields =
+      template.variables.domains.find(({ code }) => !['PRISON', 'PERSON'].includes(code)) ||
+      template.variables.domains
+        .find(({ code }) => code === 'PRISON')
+        ?.variables.find(({ code }) => code === 'prsnPhone')
+
     res.render('download-document/view', {
       backUrl: returnTo ?? `/generate-document/${req.params.id}?${new URLSearchParams(req.query).toString()}`,
       homeUrl,
@@ -30,6 +36,7 @@ export class DownloadDocumentController {
       variables,
       prisonDetails,
       prisonerDetails,
+      hasInputFields,
     })
   }
 
