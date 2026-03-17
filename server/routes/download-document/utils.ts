@@ -39,6 +39,7 @@ export const mapTemplateVariables = async (
       variables['perBookNo'] = prisoner.bookNumber ?? ''
       variables['perDob'] = prisoner.dateOfBirth ? format(prisoner.dateOfBirth, 'dd/MM/yyyy') : ''
       variables['perSecCat'] = prisoner.category ?? ''
+      variables['perLocation'] = prisoner.cellLocation ?? ''
     }
   }
 
