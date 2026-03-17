@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { format } from 'date-fns'
 import { Services } from '../../services'
 import { FLASH_KEY__FORM_RESPONSES } from '../../utils/constants'
-import { GenerateDocumentQuery, mapTemplateVariables } from './utils'
+import { GenerateDocumentQuery, getReadOnlyVariables, mapTemplateVariables } from './utils'
 import { permittedRedirect } from '../../utils/permittedRedirect'
 import logger from '../../../logger'
 
@@ -20,6 +20,7 @@ export class DownloadDocumentController {
 
     const homeUrl = `/?group=${template.groups[0]?.code ?? groups[0]!.code}`
     const variables = res.locals.formResponses ?? (await mapTemplateVariables(this.services, { res }, req.query))
+    const { prisonDetails, prisonerDetails } = getReadOnlyVariables(template)
 
     res.render('download-document/view', {
       backUrl: returnTo ?? `/generate-document/${req.params.id}?${new URLSearchParams(req.query).toString()}`,
@@ -27,6 +28,8 @@ export class DownloadDocumentController {
       returnTo,
       template,
       variables,
+      prisonDetails,
+      prisonerDetails,
     })
   }
 

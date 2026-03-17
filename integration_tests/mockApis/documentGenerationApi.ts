@@ -49,3 +49,16 @@ export const stubGetTemplateDetail = (response: components['schemas']['TemplateD
     url: `/document-generation-api/templates/${response.id}`,
     response,
   })
+
+export const stubDownloadDocument = (templateId: string) =>
+  stubFor({
+    request: {
+      method: 'POST',
+      url: `/document-generation-api/templates/${templateId}/document`,
+    },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/msword' },
+      body: 'TEXT',
+    },
+  })

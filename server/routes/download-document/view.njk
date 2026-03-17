@@ -4,52 +4,95 @@
 {%- from "govuk/components/textarea/macro.njk" import govukTextarea -%}
 {%- from "govuk/components/summary-list/macro.njk" import govukSummaryList -%}
 {%- from "govuk/components/inset-text/macro.njk" import govukInsetText -%}
+{%- from "moj/components/date-picker/macro.njk" import mojDatePicker -%}
+{%- from "partials/validatedTimeInput/macro.njk" import validatedTimeInput -%}
 
 {% set pageTitle = 'Download document - Document generation' %}
+{% set fullWidth = true %}
 
 {% block innerContent %}
-  <span class="govuk-caption-l">Create and download documents</span>
-  <h1 class="govuk-heading-l">Create a {{ template.name }}</h1>
 
-  {{ govukSummaryList({
-    card: {
-      title: { text: "Template information" }
-    },
-    rows: [
-      {
-        key: { text: "Group" },
-        value: { text: template.groups[0].name }
-      } if template.groups.length,
-      {
-        key: { text: 'Code' },
-        value: { text: template.code }
-      },
-      {
-        key: { text: 'Name' },
-        value: { text: template.name }
-      }
-    ] | removeNullish
-  }) }}
+  <div class="govuk-grid-row govuk-!-margin-bottom-6">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">Create and download documents</span>
+      <h1 class="govuk-heading-l">Create a {{ template.name }}</h1>
+    </div>
+  </div>
 
-  <h2 class="govuk-heading-m">Variables</h2>
-
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-half">
   <form method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
 
     {% for domain in template.variables.domains %}
-      <h3 class="govuk-heading-s">{{ domain.description }}</h3>
+      {% if domain.code !== 'PERSON' and (domain.code !== 'PRISON' or domain.variables.length !== prisonDetails.variables.length) %}
+        <h2 class="govuk-heading-m">{{ domain.description }}</h2>
+      {% endif %}
       {% for variable in domain.variables %}
-        {% if variable.code === 'perImage' %}
-          {{ govukInput({
-            formGroup: { classes: "govuk-!-display-none" },
-            name: variable.code,
-            value: variables[variable.code]
-          }) }}
-          {% if variables[variable.code] %}
-            <label class="govuk-label" for="perImage">{{ variable.description }}</label>
-            <img name="perImage" class="govuk-!-margin-bottom-3" src="/prisoner-image/{{ variables[variable.code] }}" alt="Image of person" loading="lazy">
+        {% if (domain.code === 'PERSON' or domain.code === 'PRISON') and variable.code !== 'prsnPhone' %}
+          <input type="hidden" name="{{ variable.code }}" value="{{ variables[variable.code] }}" readonly />
+        {% elseif variable.type === 'DATE' %}
+          {% if domain.variables[loop.index0 + 1].type === 'TIME' %}
+          <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+            {{ mojDatePicker({
+              name: variable.code,
+              label: {
+                html: variable.description + '<span class="govuk-visually-hidden"> (' + domain.description  + ')</span>'
+              },
+              hint: {
+                text: 'For example, 17/5/2024.'
+              },
+              value: variables[variable.code],
+              errorMessage: validationErrors | findError(variable.code)
+            }) }}
+            </div>
+            <div class="govuk-grid-column-one-third">
+              {{ validatedTimeInput({
+                id: domain.variables[loop.index0 + 1].code,
+                name: domain.variables[loop.index0 + 1].code,
+                fieldset: {
+                  legend: {
+                    html: domain.variables[loop.index0 + 1].description + '<span class="govuk-visually-hidden"> (' + domain.description  + ')</span>',
+                    isPageHeading: false
+                  }
+                },
+                validationErrors: validationErrors,
+                hour: variables[domain.variables[loop.index0 + 1].code + 'Hour'],
+                minute: variables[domain.variables[loop.index0 + 1].code + 'Minute']
+              }) }}
+            </div>
+          </div>
+          {% else %}
+            {{ mojDatePicker({
+              name: variable.code,
+              label: {
+                html: variable.description + '<span class="govuk-visually-hidden"> (' + domain.description  + ')</span>'
+              },
+              hint: {
+                text: 'For example, 17/5/2024.'
+              },
+              value: variables[variable.code],
+              errorMessage: validationErrors | findError(variable.code)
+            }) }}
           {% endif %}
-        {% elseif r/Address$/.test(variable.code) %}
+        {% elseif variable.type === 'TIME' %}
+          {% if domain.variables[loop.index0 - 1].type !== 'DATE' %}
+            {{ validatedTimeInput({
+              id: variable.code,
+              name: variable.code,
+              fieldset: {
+                legend: {
+                  html: variable.description + '<span class="govuk-visually-hidden"> (' + domain.description  + ')</span>',
+                  isPageHeading: false
+                }
+              },
+              validationErrors: validationErrors,
+              hour: variables[variable.code + 'Hour'],
+              minute: variables[variable.code + 'Minute']
+            }) }}
+          {% endif %}
+        {% elseif r/(Address|Addr)$/.test(variable.code) %}
           {{ govukTextarea({
             name: variable.code,
             label: { html: variable.description + '<span class="govuk-visually-hidden"> (' + domain.description  + ')</span>'  },
@@ -57,16 +100,11 @@
             value: variables[variable.code]
           }) }}
         {% else %}
-          {% set readOnly = (domain.code === 'PERSON' or domain.code === 'PRISON') and variable.code !== 'prsnPhone' %}
-
           {{ govukInput({
             name: variable.code,
             label: { html: variable.description + '<span class="govuk-visually-hidden"> (' + domain.description  + ')</span>' },
             errorMessage: validationErrors | findError(variable.code),
-            value: variables[variable.code],
-            hint: { text: 'Not editable' } if readOnly else undefined,
-            classes: 'default-cursor' if readOnly else undefined,
-            attributes: { readonly: 'true' } if readOnly else {}
+            value: variables[variable.code]
           }) }}
         {% endif %}
       {% endfor %}
@@ -102,4 +140,54 @@
       {% endif %}
     </div>
   </form>
+  </div>
+  <div class="govuk-grid-column-one-half">
+    {% if prisonDetails.variables.length or prisonerDetails.variables.length %}
+      {% set rows = [] %}
+
+      {% for item in prisonDetails.variables or [] %}
+        {% if r/(Address|Addr)$/.test(item.code) %}
+          {% set rows = (rows.push(
+            {
+              key: { text: item.description },
+              value: { text: (variables[item.code] or 'Not provided') | escape | nl2br }
+            }
+          ), rows) %}
+        {% else %}
+          {% set rows = (rows.push(
+            {
+              key: { text: item.description },
+              value: { text: variables[item.code] or 'Not provided' }
+            }
+          ), rows) %}
+        {% endif %}
+      {% endfor %}
+
+      {% for item in prisonerDetails.variables or [] %}
+        {% if item.code === 'perImage' and variables[item.code] %}
+          {% set rows = (rows.push(
+            {
+              key: { text: item.description },
+              value: { html: '<img class="per-img" src="/prisoner-image/' + variables[item.code] + '" alt="Image of person" loading="lazy">' }
+            }
+          ), rows) %}
+        {% else %}
+          {% set rows = (rows.push(
+            {
+              key: { text: item.description },
+              value: { text: variables[item.code] or 'Not provided' }
+            }
+          ), rows) %}
+        {% endif %}
+      {% endfor %}
+
+      {{ govukSummaryList({
+        card: {
+          title: { text: "Prisoner details" }
+        },
+        rows: rows
+      }) }}
+    {% endif %}
+  </div>
+</div>
 {% endblock %}
