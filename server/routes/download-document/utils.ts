@@ -29,9 +29,9 @@ export const mapTemplateVariables = async (
           ? `${prisoner.firstName} ${prisoner.middleNames} ${prisoner.lastName}`
           : `${prisoner.firstName} ${prisoner.lastName}`,
       )
-      variables['perFirstName'] = prisoner.firstName
-      variables['perMiddleNames'] = prisoner.middleNames ?? ''
-      variables['perLastName'] = prisoner.lastName
+      variables['perFirstName'] = convertToTitleCase(prisoner.firstName)
+      variables['perMiddleNames'] = convertToTitleCase(prisoner.middleNames)
+      variables['perLastName'] = convertToTitleCase(prisoner.lastName)
       variables['perImage'] = prisoner.prisonerNumber
       variables['perPrsnNo'] = prisoner.prisonerNumber
       variables['perCro'] = prisoner.croNumber ?? ''
