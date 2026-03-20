@@ -26,10 +26,13 @@ export class DownloadDocumentController {
       template.variables.domains.find(({ code }) => !['PRISON', 'PERSON'].includes(code)) ||
       template.variables.domains
         .find(({ code }) => code === 'PRISON')
-        ?.variables.find(({ code }) => code === 'prsnPhone')
+        ?.variables.find(({ code }) => code === 'prsnPhone' || code === 'prsnEmailFax')
 
     res.render('download-document/view', {
-      backUrl: returnTo ?? `/generate-document/${req.params.id}?${new URLSearchParams(req.query).toString()}`,
+      backUrl: returnTo
+        ? returnTo.url
+        : `/generate-document/${req.params.id}?${new URLSearchParams(req.query).toString()}`,
+      backLabel: returnTo?.label,
       homeUrl,
       returnTo,
       template,
