@@ -19,6 +19,7 @@ export const mapTemplateVariables = async (
     variables['prsnCode'] = prison.prisonId
     variables['prsnName'] = prison.prisonName
     variables['prsnAddress'] = formatAddress(prison.addresses[0])
+    variables['prsnSecCat'] = prison.categories.join(', ')
   }
 
   if (query.prisonNumber) {
@@ -76,7 +77,7 @@ export const getReadOnlyVariables = (template: components['schemas']['TemplateDe
     prisonDetails: prisonDetails
       ? {
           ...prisonDetails,
-          variables: prisonDetails.variables.filter(({ code }) => code !== 'prsnPhone'),
+          variables: prisonDetails.variables.filter(({ code }) => code !== 'prsnPhone' && code !== 'prsnEmailFax'),
         }
       : undefined,
     prisonerDetails,

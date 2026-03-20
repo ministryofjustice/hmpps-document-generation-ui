@@ -27,7 +27,7 @@
             <h2 class="govuk-heading-m">{{ domain.description }}</h2>
           {% endif %}
           {% for variable in domain.variables %}
-            {% if (domain.code === 'PERSON' or domain.code === 'PRISON') and variable.code !== 'prsnPhone' %}
+            {% if (domain.code === 'PERSON' or domain.code === 'PRISON') and variable.code !== 'prsnPhone' and variable.code !== 'prsnEmailFax' %}
               <input type="hidden" name="{{ variable.code }}" value="{{ variables[variable.code] }}" readonly />
             {% elseif variable.type === 'DATE' %}
               {% if domain.variables[loop.index0 + 1].type === 'TIME' %}
@@ -176,8 +176,8 @@
           {% if returnTo %}
             {{ govukButton({
               classes: "govuk-button--secondary",
-              text: "Exit",
-              href: returnTo,
+              text: returnTo.label,
+              href: returnTo.url,
               preventDoubleClick: true
             }) }}
           {% else %}
