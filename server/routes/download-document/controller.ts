@@ -10,13 +10,14 @@ export class DownloadDocumentController {
   constructor(readonly services: Services) {}
 
   GET = async (
-    req: Request<{ id: string }, unknown, unknown, GenerateDocumentQuery & { returnTo?: string }>,
+    req: Request<{ id: string }, unknown, unknown, GenerateDocumentQuery & { returnTo?: string; backTo?: string }>,
     res: Response,
   ) => {
     const template = req.middleware!.template!
     const groups = req.middleware!.groups!
 
     const returnTo = permittedRedirect(req.query.returnTo)
+    const backTo = permittedRedirect(req.query.backTo)
 
     const homeUrl = `/?group=${template.groups[0]?.code ?? groups[0]!.code}`
     const variables = res.locals.formResponses ?? (await mapTemplateVariables(this.services, { res }, req.query))
@@ -29,10 +30,7 @@ export class DownloadDocumentController {
         ?.variables.find(({ code }) => code === 'prsnPhone' || code === 'prsnEmailFax')
 
     res.render('download-document/view', {
-      backUrl: returnTo
-        ? returnTo.url
-        : `/generate-document/${req.params.id}?${new URLSearchParams(req.query).toString()}`,
-      backLabel: returnTo?.label,
+      backUrl: backTo?.url ?? `/generate-document/${req.params.id}?${new URLSearchParams(req.query).toString()}`,
       homeUrl,
       returnTo,
       template,
