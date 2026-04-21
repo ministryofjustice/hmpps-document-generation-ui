@@ -12,6 +12,26 @@ The UI serves two purposes:
 
 Both the API and this UI are designed as shared DPS capabilities, currently used exclusively by the **Receptions and External Movements** product set.
 
+## Supported queries for Document Generation
+
+Other UI services are expected to redirect to `/download-document/:document-id` of this UI for document generation.
+
+The following queries are supported:
+
+|property key |           value           |                         retrieved variables                          |
+| :-----: |:-------------------------:|:--------------------------------------------------------------------:|
+|prisonId |         agency ID         |       retrieve Prison/Agency data from Prison Register Service       |
+|prisonNumber |      prison numnber       |         retrieve prisoner data from Prisoner Search Service          |
+| absenceId | temporary absence plan ID | retrieve temporary absence plan data from External Movements Service |
+
+If additional variables are to be added, they can be updated in [document-document/utils.ts](/server/routes/download-document/utils.ts)
+
+Two more query properties are supported:
+1. `backTo`: URL for the back link
+2. `returnTo`: URL for exit button on the bottom of the page
+
+The URLs must be added to [permittedRedirect.ts](/server/utils/permittedRedirect.ts) to be allowed.
+
 ## Getting Started
 
 ### Installation
