@@ -23,6 +23,14 @@ generic-service:
     SENTRY_ENVIRONMENT: DEV
     AUDIT_ENABLED: "true"
 
+  allowlist:
+    groups:
+      - digital_staff_and_mojo
+      - moj_cloud_platform
+      - prisons
+      - private_prisons
+      - accessibility-testing-1
+
 generic-prometheus-alerts:
   alertSeverity: move-and-improve-alerts-non-prod
   businessHoursOnly: true
