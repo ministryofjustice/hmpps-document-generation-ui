@@ -58,17 +58,6 @@ export const mapTemplateVariables = async (
       variables['tapEndTimeHour'] = occurrence.end ? format(occurrence.end, 'HH') : ''
       variables['tapEndTimeMinute'] = occurrence.end ? format(occurrence.end, 'mm') : ''
       variables['tapCat'] = occurrence.reason.description
-    } else {
-      const absence = await externalMovementsService.getTapAuthorisation(context, query.absenceId)
-      if (absence) {
-        variables['tapStartDate'] = format(absence.start, 'dd/MM/yyyy')
-        variables['tapStartTimeHour'] = ''
-        variables['tapStartTimeMinute'] = ''
-        variables['tapEndDate'] = format(absence.end, 'dd/MM/yyyy')
-        variables['tapEndTimeHour'] = ''
-        variables['tapEndTimeMinute'] = ''
-        variables['tapCat'] = absence.reason.description
-      }
     }
   }
 
