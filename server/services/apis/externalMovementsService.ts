@@ -3,7 +3,7 @@ import { Response as SuperAgentResponse } from 'superagent'
 import CustomRestClient, { ApiRequestContext } from '../../data/customRestClient'
 import config from '../../config'
 import logger from '../../../logger'
-import { TemporaryAbsence } from './model/temporaryAbsence'
+import { TemporaryAbsenceResponse, TemporaryAbsenceOccurrences } from './model/temporaryAbsenceResponse'
 
 export default class ExternalMovementsService {
   private apiClient: CustomRestClient
@@ -27,14 +27,28 @@ export default class ExternalMovementsService {
   }
 
   async getTapAuthorisation(context: ApiRequestContext, id: string) {
-    const response = await this.apiClient.withContext(context).get<TemporaryAbsence>({
-      path: `/temporary-absence-authorisations/${id}`,
+    const response = await this.apiClient.withContext(context).get<TemporaryAbsenceResponse>({
+      path: `/integrations/temporary-absence-authorisations/${id}`,
     })
 
-    if (!context.res.locals.user.caseLoads?.find(caseload => caseload.caseLoadId === response.prison.code)) {
+    if (!context.res.locals.user.caseLoads?.find(caseload => caseload.caseLoadId === response.data.prisonCode)) {
       return null
     }
 
-    return response
+    return response.data
+  }
+
+  async getTapAuthorisationFirstOccurrence(context: ApiRequestContext, id: string) {
+    const response = await this.apiClient.withContext(context).get<TemporaryAbsenceOccurrences>({
+      path: `/integrations/temporary-absence-authorisations/${id}/occurrences`,
+    })
+
+    if (
+      !context.res.locals.user.caseLoads?.find(caseload => caseload.caseLoadId === response.data[0]?.data.prisonCode)
+    ) {
+      return null
+    }
+
+    return response.data[0]!.data
   }
 }

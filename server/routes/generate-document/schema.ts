@@ -5,7 +5,7 @@ import { Services } from '../../services'
 import { Agency } from '../../services/apis/model/agency'
 import Prisoner from '../../services/apis/model/prisoner'
 import { hasVariableDomain } from '../../utils/utils'
-import { TemporaryAbsence } from '../../services/apis/model/temporaryAbsence'
+import { TemporaryAbsence } from '../../services/apis/model/temporaryAbsenceResponse'
 
 export const schemaFactory =
   ({ documentGenerationService, prisonerSearchService, prisonRegisterService, externalMovementsService }: Services) =>
