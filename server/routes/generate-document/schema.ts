@@ -5,7 +5,7 @@ import { Services } from '../../services'
 import { Agency } from '../../services/apis/model/agency'
 import Prisoner from '../../services/apis/model/prisoner'
 import { hasVariableDomain } from '../../utils/utils'
-import { TemporaryAbsence } from '../../services/apis/model/temporaryAbsence'
+import { TemporaryAbsenceOccurrence } from '../../services/apis/model/temporaryAbsence'
 
 export const schemaFactory =
   ({ documentGenerationService, prisonerSearchService, prisonRegisterService, externalMovementsService }: Services) =>
@@ -71,9 +71,9 @@ export const schemaFactory =
             res.locals.user.userRoles.includes('EXTERNAL_MOVEMENTS_TAP_RO') ||
             res.locals.user.userRoles.includes('EXTERNAL_MOVEMENTS_TAP_RW')
           ) {
-            let absence: TemporaryAbsence | undefined | null
+            let absence: TemporaryAbsenceOccurrence | undefined | null
             try {
-              absence = await externalMovementsService.getTapAuthorisation({ res }, ctx.value)
+              absence = await externalMovementsService.getTapAuthorisationFirstOccurrence({ res }, ctx.value)
             } catch {
               absence = null
             } finally {

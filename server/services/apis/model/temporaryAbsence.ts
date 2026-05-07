@@ -1,3 +1,5 @@
 import { components } from '../../../@types/externalMovements'
 
-export type TemporaryAbsence = components['schemas']['TapAuthorisation']
+export type TemporaryAbsenceOccurrences = components['schemas']['IntegrationResponsesIntegrationOccurrence']
+
+export type TemporaryAbsenceOccurrence = components['schemas']['IntegrationOccurrence']

@@ -49,20 +49,15 @@ export const mapTemplateVariables = async (
     (context.res.locals.user.userRoles.includes('EXTERNAL_MOVEMENTS_TAP_RO') ||
       context.res.locals.user.userRoles.includes('EXTERNAL_MOVEMENTS_TAP_RW'))
   ) {
-    const absence = await externalMovementsService.getTapAuthorisation(context, query.absenceId)
-    if (absence) {
-      variables['tapStartDate'] = format(absence.start, 'dd/MM/yyyy')
-      variables['tapStartTimeHour'] = absence.occurrences[0]?.start ? format(absence.occurrences[0].start, 'HH') : ''
-      variables['tapStartTimeMinute'] = absence.occurrences[0]?.start ? format(absence.occurrences[0].start, 'mm') : ''
-      variables['tapEndDate'] = format(absence.end, 'dd/MM/yyyy')
-      variables['tapEndTimeHour'] = absence.occurrences[0]?.start ? format(absence.occurrences[0].end, 'HH') : ''
-      variables['tapEndTimeMinute'] = absence.occurrences[0]?.start ? format(absence.occurrences[0].end, 'mm') : ''
-      variables['tapCat'] =
-        absence.absenceReason?.description ??
-        absence.absenceReasonCategory?.description ??
-        absence.absenceSubType?.description ??
-        absence.absenceType?.description ??
-        ''
+    const occurrence = await externalMovementsService.getTapAuthorisationFirstOccurrence(context, query.absenceId)
+    if (occurrence) {
+      variables['tapStartDate'] = format(occurrence.start, 'dd/MM/yyyy')
+      variables['tapStartTimeHour'] = occurrence.start ? format(occurrence.start, 'HH') : ''
+      variables['tapStartTimeMinute'] = occurrence.start ? format(occurrence.start, 'mm') : ''
+      variables['tapEndDate'] = format(occurrence.end, 'dd/MM/yyyy')
+      variables['tapEndTimeHour'] = occurrence.end ? format(occurrence.end, 'HH') : ''
+      variables['tapEndTimeMinute'] = occurrence.end ? format(occurrence.end, 'mm') : ''
+      variables['tapCat'] = occurrence.reason.description
     }
   }
 
