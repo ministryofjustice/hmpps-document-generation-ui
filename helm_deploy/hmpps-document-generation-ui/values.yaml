@@ -3,7 +3,7 @@ generic-service:
   productId: 'DPS125' # productId for the product that this belongs too, i.e. DPS001, see README.md for details
 
   # the IRSA service account name for accessing AWS resources
-  serviceAccountName: "hmpps-external-movements-ui" # sharing the same service account as external movements ui because they sit in the same namesapce
+  serviceAccountName: "hmpps-document-generation-ui" # sharing the same service account as external movements ui because they sit in the same namesapce
 
   replicaCount: 4
 
@@ -47,12 +47,12 @@ generic-service:
     hmpps-document-generation-ui-auth-code:
       AUTH_CODE_CLIENT_ID: 'AUTH_CODE_CLIENT_ID'
       AUTH_CODE_CLIENT_SECRET: 'AUTH_CODE_CLIENT_SECRET'
-    hmpps-external-movements-ui-session-secret:
+    hmpps-document-generation-ui-session-secret:
       SESSION_SECRET: 'SESSION_SECRET'
     elasticache-redis:
       REDIS_HOST: 'primary_endpoint_address'
       REDIS_AUTH_TOKEN: 'auth_token'
-    hmpps-external-movements-ui-application-insights:
+    hmpps-document-generation-ui-application-insights:
       APPLICATIONINSIGHTS_CONNECTION_STRING: "APPLICATIONINSIGHTS_CONNECTION_STRING"
     hmpps-document-generation-ui-sentry:
       SENTRY_DSN: "SENTRY_DSN"
