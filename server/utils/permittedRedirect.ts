@@ -6,11 +6,11 @@ const PERMITTED_DOMAINS = [
 
 const REDIRECT_LABELS = [
   {
-    regex: /external-movements[\w-]*.hmpps.service.justice.gov.uk\/temporary-absences-home/,
+    regex: /external-movements[\w-]*\.hmpps\.service\.justice\.gov\.uk\/temporary-absences-home/,
     label: 'Return to temporary absences',
   },
   {
-    regex: /external-movements[\w-]*.hmpps.service.justice.gov.uk\/temporary-absence-authorisations\/[\w-]+/,
+    regex: /external-movements[\w-]*\.hmpps\.service\.justice\.gov\.uk\/temporary-absence-authorisations\/[\w-]+/,
     label: 'Return to absence plan',
   },
 ]

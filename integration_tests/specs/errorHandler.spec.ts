@@ -18,7 +18,7 @@ test.describe('test error handlers', () => {
 
     // await stubApiError()
     await page.goto(`/page-that-requires-API-call`)
-    await expect(page.getByRole('link', { name: 'Stubbed API error returned' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'S.tubbed API error returned' })).toBeVisible()
 
     expect(await page.title()).toMatch(/^Error: .* - DPS$/)
   })
