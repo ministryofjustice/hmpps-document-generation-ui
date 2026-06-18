@@ -47,7 +47,7 @@ repos:
       - id: todo-reminder
         name: show TODO reminders
         language: system
-        entry: grep -r -n --color=always --include="*.ts" "// TODO:.*" ./server ./integration_tests
+        entry: npm run todo-reminder
         types: [ ts ]
         require_serial: true
         pass_filenames: false
