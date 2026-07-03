@@ -5,7 +5,7 @@ generic-service:
   # the IRSA service account name for accessing AWS resources
   serviceAccountName: "hmpps-document-generation-ui" # sharing the same service account as external movements ui because they sit in the same namesapce
 
-  replicaCount: 4
+  replicaCount: 2
 
   image:
     repository: ghcr.io/ministryofjustice/hmpps-document-generation-ui
