@@ -2,6 +2,9 @@ const PERMITTED_DOMAINS = [
   'https://external-movements-dev.hmpps.service.justice.gov.uk',
   'https://external-movements-preprod.hmpps.service.justice.gov.uk',
   'https://external-movements.hmpps.service.justice.gov.uk',
+  'https://transfer-scheduler-dev.hmpps.service.justice.gov.uk',
+  'https://transfer-scheduler-preprod.hmpps.service.justice.gov.uk',
+  'https://transfer-scheduler.hmpps.service.justice.gov.uk',
 ]
 
 const REDIRECT_LABELS = [
@@ -12,6 +15,10 @@ const REDIRECT_LABELS = [
   {
     regex: /external-movements[\w-]*\.hmpps\.service\.justice\.gov\.uk\/temporary-absence-authorisations\/[\w-]+/,
     label: 'Return to absence plan',
+  },
+  {
+    regex: /transfer-scheduler[\w-]*\.hmpps\.service\.justice\.gov\.uk(\/|$)/,
+    label: 'Return to transfers',
   },
 ]
 
