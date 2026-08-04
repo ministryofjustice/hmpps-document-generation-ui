@@ -23,7 +23,10 @@ const REDIRECT_LABELS = [
 ]
 
 export const permittedRedirect = (returnTo?: string) => {
-  const url = returnTo && PERMITTED_DOMAINS.find(domain => returnTo?.startsWith(`${domain}/`)) ? returnTo : null
+  const url =
+    returnTo && PERMITTED_DOMAINS.find(domain => returnTo?.startsWith(`${domain}/`) || returnTo === domain)
+      ? returnTo
+      : null
   if (url) {
     return {
       url,
