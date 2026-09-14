@@ -12,6 +12,7 @@ import { EditTemplateRoutes } from './edit-template/routes'
 import { GenerateDocumentRoutes } from './generate-document/routes'
 import { DownloadDocumentRoutes } from './download-document/routes'
 import { populateTemplateConfig } from '../middleware/permissions/populateTemplateConfig'
+import sanitiseUrl from '../middleware/sanitiseUrl'
 
 export default function routes(services: Services): Router {
   const { router, get } = BaseRouter()
@@ -19,6 +20,8 @@ export default function routes(services: Services): Router {
   const { documentGenerationService } = services
 
   const controller = new HomepageController(documentGenerationService)
+
+  router.use(sanitiseUrl)
 
   router.use(breadcrumbs())
 

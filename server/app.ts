@@ -27,7 +27,7 @@ import { handleApiError } from './middleware/validation/handleApiError'
 import handleFileUpload from './middleware/validation/handleFileUpload'
 
 import './utils/superagentMultipartRequestFix'
-import PrisonerImageRoutes from './routes/prisonerImageRoutes'
+import PrisonerImageController from './routes/prisonerImageController'
 import addUsernameAndCaseloadToTelemetry from './utils/azureAppInsights'
 
 export default function createApp(services: Services): express.Application {
@@ -72,8 +72,6 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
 
-  app.get('/prisoner-image/:prisonNumber', new PrisonerImageRoutes(services.prisonApiService).GET)
-
   app.get(
     /(.*)/,
     getFrontendComponents({
@@ -96,6 +94,8 @@ export default function createApp(services: Services): express.Application {
       prisonApiConfig: config.apis.prisonApi,
     }),
   )
+
+  app.get('/prisoner-image/:prisonNumber', new PrisonerImageController(services.prisonApiService).GET)
 
   app.use(addUsernameAndCaseloadToTelemetry())
 

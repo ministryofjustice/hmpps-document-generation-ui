@@ -20,14 +20,16 @@ export const services = () => {
     telemetryClient: telemetry,
   })
 
+  const prisonerSearchService = new PrisonerSearchApiService(hmppsAuthClient, prisonPermissionsService)
+
   return {
     applicationInfo,
     auditService: new AuditService(hmppsAuditClient),
-    prisonerSearchService: new PrisonerSearchApiService(hmppsAuthClient, prisonPermissionsService),
+    prisonerSearchService,
     prisonRegisterService: new PrisonRegisterService(hmppsAuthClient),
     documentGenerationService: new DocumentGenerationService(hmppsAuthClient),
     externalMovementsService: new ExternalMovementsService(hmppsAuthClient),
-    prisonApiService: new PrisonApiService(hmppsAuthClient),
+    prisonApiService: new PrisonApiService(hmppsAuthClient, prisonerSearchService),
   }
 }
 
