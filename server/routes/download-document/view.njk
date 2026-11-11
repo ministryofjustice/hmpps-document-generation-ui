@@ -117,7 +117,7 @@
               {% set rows = (rows.push(
                 {
                   key: { text: item.description },
-                  value: { text: (variables[item.code] or 'Not provided') | escape | nl2br }
+                  value: { html: (variables[item.code] or 'Not provided') | escape | nl2br }
                 }
               ), rows) %}
             {% else %}
